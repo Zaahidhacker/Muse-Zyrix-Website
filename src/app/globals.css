@@ -1,0 +1,673 @@
+@import "tailwindcss";
+
+/*
+ * Zyrix design system — tokens dealt by the taste-skill.
+ * Palette: the client's own black/gold via `start.mjs brand` (the three
+ * dealt palettes clashed with the brand). Type: first dealt pairing
+ * Schibsted Grotesk; display in Archivo condensed (width axis) to keep the
+ * live site's monumental condensed display type; italic Instrument Serif
+ * for emphasis words; system mono for micro-labels. See PLAN.md.
+ */
+
+@theme {
+  --color-coal: #0a0a0a;
+  --color-panel: #141414;
+  --color-panel2: #1c1c1c;
+  --color-cream: #f5f1e8;
+  --color-gold: #f0a500;
+  --color-gold-deep: #c78d00;
+  --color-muted: #a8a29a;
+  --color-muted-dark: #575653;
+
+  --font-display: "Archivo", "Schibsted Grotesk", system-ui, sans-serif;
+  --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+
+:root {
+  --p-bg: #0a0a0a;
+  --p-surface: #141414;
+  --p-ink: #f5f1e8;
+  --p-muted: #a8a29a;
+  --p-accent: #f0a500;
+  --p-accent-ink: #0a0a0a;
+  --p-action: #f0a500;
+  --p-action-ink: #0a0a0a;
+  --p-inv-bg: #f5f1e8;
+  --p-inv-ink: #0a0a0a;
+  --p-inv-muted: #575653;
+  --p-inv-accent: #0a0a0a;
+  --p-inv-action: #0a0a0a;
+  --p-inv-action-ink: #f5f1e8;
+
+  --nav: 72px;
+  --padt: 120px;
+  --padb: 72px;
+  --gut: 80px;
+  --hgap: 48px;
+
+  --font-display: "Archivo", "Schibsted Grotesk", system-ui, sans-serif;
+  --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+  --display-weight: 600;
+  --display-tracking: -0.03em;
+  --display-tracking-xl: -0.04em;
+  --ly-scale: 0.98;
+}
+
+@media (max-width: 639px) {
+  :root {
+    --nav: 56px;
+    --padt: 96px;
+    --padb: 48px;
+    --gut: 24px;
+    --hgap: 24px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+  scroll-padding-top: 0;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--p-bg);
+  color: var(--p-ink);
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--p-accent);
+  color: var(--p-accent-ink);
+}
+
+/* ---------- layout shell ---------- */
+
+.wrap {
+  width: min(100% - 2 * var(--gut), 1280px);
+  margin-inline: auto;
+}
+
+.section {
+  height: calc(var(--h, 1) * 100svh);
+  padding-top: var(--padt);
+  padding-bottom: var(--padb);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.section > .wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1023px) {
+  .section {
+    height: auto;
+    min-height: calc(var(--hm, var(--h, 1)) * 100svh);
+  }
+}
+
+.ground-inverse {
+  background: var(--p-inv-bg);
+  color: var(--p-inv-ink);
+}
+
+.ground-surface {
+  background: var(--p-surface);
+}
+
+/* ---------- type ---------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-stretch: 75%;
+  letter-spacing: var(--display-tracking);
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+h1.display {
+  font-size: clamp(40px, 6.4vw, 92px);
+  letter-spacing: var(--display-tracking-xl);
+}
+
+h2.display {
+  font-size: clamp(34px, 4.6vw, 64px);
+}
+
+/* A figure (price, score, count) never outgrows the h2. */
+.figure {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-stretch: 75%;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-size: clamp(34px, 4.6vw, 64px);
+}
+
+/* Standalone links/buttons that must be a 44px tap target on phones. */
+.tap44 {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+h3.display {
+  font-size: clamp(24px, 2vw, 28px);
+  letter-spacing: -0.02em;
+}
+
+/* Same face and size as h3.display, but sentence case: card claims and
+   FAQ questions keep the live site's casing while sharing one title face. */
+.display--sentence {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-stretch: 75%;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  font-size: clamp(24px, 2vw, 28px);
+}
+
+.serif-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--p-accent);
+}
+
+.ground-inverse .eyebrow {
+  color: var(--p-inv-ink);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--p-muted);
+}
+
+.ground-inverse .muted {
+  color: var(--p-inv-muted);
+}
+
+.lead {
+  font-size: 20px;
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+.measure {
+  max-width: 62ch;
+}
+
+/* ---------- buttons & links ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 160ms ease, background-color 160ms ease, color 160ms ease,
+    border-color 160ms ease;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--p-action);
+  color: var(--p-action-ink);
+}
+
+.btn--primary:hover {
+  transform: translateY(-2px);
+  background: #ffb61a;
+}
+
+.btn--primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--p-ink);
+  border-color: color-mix(in srgb, var(--p-ink) 35%, transparent);
+}
+
+.btn--secondary:hover {
+  transform: translateY(-2px);
+  border-color: var(--p-ink);
+}
+
+.btn--secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@media (max-width: 639px) {
+  .btn {
+    white-space: normal;
+    height: auto;
+    min-height: 48px;
+    padding: 12px 16px;
+    text-align: center;
+    line-height: 1.25;
+  }
+}
+
+.ground-inverse .btn--secondary {
+  color: var(--p-inv-ink);
+  border-color: color-mix(in srgb, var(--p-inv-ink) 35%, transparent);
+}
+
+.ground-inverse .btn--secondary:hover {
+  border-color: var(--p-inv-ink);
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 200ms ease;
+}
+
+.link:hover {
+  background-size: 100% 1px;
+}
+
+.link--gold {
+  color: var(--p-accent);
+}
+
+/* ---------- nav ---------- */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--nav);
+  background: var(--p-bg);
+  border-bottom: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
+  z-index: 50;
+}
+
+.nav .wrap {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav__links a {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--p-ink);
+  text-decoration: none;
+  padding: 8px 0;
+}
+
+.nav__wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: 75%;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: var(--p-ink);
+  text-decoration: none;
+  line-height: 1;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mark-arc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--p-accent);
+  border-radius: 999px;
+  color: var(--p-accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1;
+  flex: none;
+}
+
+.progress-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--p-ink) 20%, transparent);
+  /* One type family in the nav: the text face, not mono. */
+  font-family: var(--font-text);
+  font-size: 12px;
+  color: var(--p-muted);
+  white-space: nowrap;
+}
+
+.progress-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--p-accent);
+}
+
+/* ---------- cards & panels ---------- */
+
+.card {
+  background: var(--p-surface);
+  border: 1px solid color-mix(in srgb, var(--p-ink) 10%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.ground-inverse .card {
+  /* Same ground as the section: only three flat grounds on the page
+     (base, surface, inverse). The border separates card from ground. */
+  background: var(--p-inv-bg);
+  border-color: color-mix(in srgb, var(--p-inv-ink) 12%, transparent);
+}
+
+.card--lift {
+  transition: transform 200ms ease, border-color 200ms ease;
+}
+
+.card--lift:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--p-accent) 55%, transparent);
+}
+
+/* Pricing tiers are a different card treatment from the lift cards:
+   no lift, only a border change on hover; the featured tier (Business)
+   carries a gold border. One card layout at most twice per page. */
+.card--tier {
+  transition: border-color 200ms ease;
+}
+
+.card--tier:hover {
+  border-color: color-mix(in srgb, var(--p-accent) 55%, transparent);
+}
+
+.card--featured {
+  border-color: color-mix(in srgb, var(--p-accent) 70%, transparent);
+}
+
+.panel {
+  background: var(--p-surface);
+  border: 1px solid color-mix(in srgb, var(--p-ink) 10%, transparent);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+.hairline-t {
+  border-top: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
+}
+
+.ground-inverse .hairline-t {
+  border-top-color: color-mix(in srgb, var(--p-inv-ink) 14%, transparent);
+}
+
+/* ---------- forms ---------- */
+
+.field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--p-ink) 25%, transparent);
+  background: transparent;
+  color: var(--p-ink);
+  font-family: var(--font-text);
+  font-size: 16px;
+  outline: none;
+  transition: border-color 160ms ease;
+}
+
+.field textarea {
+  height: auto;
+  min-height: 120px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--p-accent);
+}
+
+.field select option {
+  background: var(--p-surface);
+  color: var(--p-ink);
+}
+
+.field__error {
+  color: #ff6b5e;
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: #ff6b5e;
+}
+
+.form__status {
+  font-size: 14px;
+  margin-top: 12px;
+  min-height: 21px;
+}
+
+/* ---------- motion layer ---------- */
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-enter] > * {
+  animation: hero-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+[data-enter] > *:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+[data-enter] > *:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+[data-enter] > *:nth-child(4) {
+  animation-delay: 270ms;
+}
+
+[data-enter] > *:nth-child(5) {
+  animation-delay: 360ms;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+/* ---------- accessibility ---------- */
+
+.closing {
+  /* Exactly one screen tall (SR-2): the closing footer is a section too. */
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gut);
+  top: -100px;
+  z-index: 100;
+  background: var(--p-accent);
+  color: var(--p-accent-ink);
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: top 160ms ease;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--p-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-enter] > * {
+    animation: none;
+  }
+  .pulse-dot {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- 3D stage ---------- */
+
+.orb-stage {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 240px;
+}
+
+/* On phones the hero must end at the fold (844px): the stage is a spacer
+   for the fixed canvas, so it shrinks to 120px and the hero fits. */
+@media (max-width: 639px) {
+  /* Hero-fold: 120px stage keeps the 390px hero at exactly 844px (the fold). */
+  .orb-stage {
+    min-height: 120px;
+  }
+}
+
+/* The stage never takes the hero entrance transform: it holds the fixed
+   canvas, and a transform on an ancestor would re-parent the fixed
+   element mid-entrance. */
+[data-enter] > .orb-stage {
+  animation: none;
+}
+
+.orb-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.orb-fallback .torus {
+  width: min(52vw, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: clamp(18px, 3.4vw, 42px) solid transparent;
+  background:
+    radial-gradient(circle at 32% 28%, #ffd34d 0%, #f0a500 34%, #8a5c00 62%, #3a2700 100%)
+    border-box;
+  box-shadow:
+    0 0 90px rgba(240, 165, 0, 0.35),
+    inset 0 0 60px rgba(0, 0, 0, 0.55);
+}
