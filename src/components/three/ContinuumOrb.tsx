@@ -270,6 +270,7 @@ export default function ContinuumOrb() {
   return (
     <div
       aria-hidden="true"
+      className="orb-canvas"
       style={{ position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none" }}
     >
       <Canvas

@@ -72,10 +72,11 @@ export default function Pricing() {
         title={PRICING.h2}
         lead={`${PRICING.meta} plans`}
       />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6" data-reveal-stagger>
         {PRICING.tiers.map((tier) => (
           <article
             key={tier.n}
+            data-reveal-item
             className={`card card--tier flex flex-col gap-5 p-6 md:p-8${tier.n === "02" ? " card--featured" : ""}`}
           >
             <div className="flex items-baseline justify-between gap-4">
@@ -105,7 +106,7 @@ export default function Pricing() {
           </article>
         ))}
       </div>
-      <div className="mt-10 flex flex-wrap items-center justify-start gap-4 pt-6 md:mt-12">
+      <div className="mt-10 flex flex-wrap items-center justify-start gap-4 pt-6 md:mt-12" data-reveal>
         <p className="label">{PRICING.footerSplit}</p>
         <Btn href={PRICING.footerCtaHref} variant="primary">
           {PRICING.footerCta}

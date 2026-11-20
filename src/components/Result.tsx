@@ -50,17 +50,17 @@ export function Result() {
     <Section
       id="result"
       h={1}
-      attrs={{ "data-statement": "" }}
+      attrs={{ "data-statement": "", "data-dim-orb": "" }}
     >
       <div ref={scope as React.RefObject<HTMLDivElement>} className="flex flex-1 flex-col justify-between">
-        <div>
+        <div className="scrim">
           <SectionHead
             index={RESULT.index}
             eyebrow={RESULT.eyebrow}
             title={RESULT.h2}
             lead={RESULT.body}
           />
-          <p className="label muted mb-8 font-mono">{RESULT.meta}</p>
+          <p className="label muted mb-8 font-mono" data-reveal>{RESULT.meta}</p>
         </div>
         <p
           className="display"

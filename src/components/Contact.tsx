@@ -113,19 +113,20 @@ export default function Contact() {
   }
 
   return (
-    <Section id="contact" h={2} hm={2}>
+    <Section id="contact" h={2} hm={2} attrs={{ "data-dim-orb": "" }}>
       <div className="flex flex-1 flex-col justify-between">
         <div>
           <SectionHead
             eyebrow={CONTACT_SECTION.eyebrow}
             title={CONTACT_SECTION.h2}
             lead={CONTACT_SECTION.meta}
+            scrim
           />
-          <p className="lead muted -mt-6 mb-10 max-w-[62ch] md:-mt-8">
+          <p className="lead muted -mt-6 mb-10 max-w-[62ch] md:-mt-8" data-reveal>
             {CONTACT_SECTION.body}
           </p>
 
-          <div className="mb-8 w-fit rounded-lg bg-panel p-4">
+          <div className="mb-8 w-fit rounded-lg bg-panel p-4" data-reveal>
             <ul className="flex flex-col gap-4">
             {CONTACT_SECTION.channels.map((ch) => (
               <li key={ch.label} className="flex flex-wrap items-baseline gap-3">
@@ -150,6 +151,7 @@ export default function Contact() {
         <div>
           <form
             data-ui="free-plan-form"
+            data-reveal
             onSubmit={onSubmit}
             noValidate
             aria-label={CONTACT_SECTION.h2}
@@ -261,7 +263,7 @@ export default function Contact() {
             </div>
           </form>
 
-          <p className="label mt-10">{form.note}</p>
+          <p className="label mt-10" data-reveal>{form.note}</p>
         </div>
       </div>
       <WhatsAppFloat />

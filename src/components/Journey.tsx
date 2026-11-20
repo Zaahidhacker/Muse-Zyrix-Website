@@ -180,15 +180,16 @@ export function Journey() {
   };
 
   return (
-    <Section id="journey" h={2} hm={1}>
-      <SectionHead eyebrow={JOURNEY.eyebrow} title={JOURNEY.h2} lead={JOURNEY.stats} />
+    <Section id="journey" h={2} hm={1} attrs={{ "data-dim-orb": "" }}>
+      <SectionHead eyebrow={JOURNEY.eyebrow} title={JOURNEY.h2} lead={JOURNEY.stats} scrim />
       <div className="grid flex-1 grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Step buttons */}
-        <div className="flex flex-col gap-2" role="group" aria-label={JOURNEY.h2}>
+        <div className="flex flex-col gap-2" role="group" aria-label={JOURNEY.h2} data-reveal-stagger>
           {JOURNEY.steps.map((s, i) => (
             <button
               key={s.n}
               type="button"
+              data-reveal-item
               aria-pressed={active === i}
               onClick={() => selectStep(i)}
               className={`rounded-md border p-5 text-left transition-colors ${
@@ -210,6 +211,7 @@ export function Journey() {
         {/* Active step mock */}
         <div
           className="flex flex-col"
+          data-reveal
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(8px)",

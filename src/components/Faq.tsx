@@ -9,15 +9,16 @@ export default function Faq() {
   const [open, setOpen] = useState(0);
 
   return (
-    <Section id="faq" h={1}>
+    <Section id="faq" h={1} attrs={{ "data-dim-orb": "" }}>
       <SectionHead
         eyebrow={FAQ.eyebrow}
         title={FAQ.h2}
         lead={FAQ.meta}
+        scrim
       />
-      <div data-ui="faq-accordion">
+      <div data-ui="faq-accordion" data-reveal-stagger>
         {FAQ.items.map((item, i) => (
-          <div key={item.q} className="hairline-t">
+          <div key={item.q} className="hairline-t" data-reveal-item>
             <h3 className="display--sentence">
               <button
                 type="button"

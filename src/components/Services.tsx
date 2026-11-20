@@ -250,9 +250,12 @@ export function Services() {
   ];
 
   return (
-    <Section id="services" h={2} hm={3}>
-      <SectionHead index={SERVICES.index} eyebrow={SERVICES.eyebrow} title={SERVICES.h2} />
-      <div className="grid flex-1 grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2">
+    <Section id="services" h={2} hm={3} attrs={{ "data-dim-orb": "" }}>
+      <SectionHead index={SERVICES.index} eyebrow={SERVICES.eyebrow} title={SERVICES.h2} scrim />
+      <div
+        className="grid flex-1 grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2"
+        data-reveal-stagger
+      >
         {SERVICES.items.map((item, i) => {
           const head = (
             <div className="mb-5 flex items-baseline justify-between gap-4">
@@ -285,6 +288,7 @@ export function Services() {
             return (
               <article
                 key={item.n}
+                data-reveal-item
                 className="card card--lift flex flex-col gap-6 p-6 md:p-7 lg:flex-row"
               >
                 <div className="flex min-w-0 flex-1 flex-col">
@@ -302,7 +306,7 @@ export function Services() {
           // and tags — a low stack, distinct from the top and side mocks.
           if (i === 3) {
             return (
-              <article key={item.n} className="card card--lift flex flex-col p-6 md:p-7">
+              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
                 {head}
                 {claim}
                 {body}
@@ -315,7 +319,7 @@ export function Services() {
           // Card 1 (Be trusted): mock above the text.
           if (i === 0) {
             return (
-              <article key={item.n} className="card card--lift flex flex-col p-6 md:p-7">
+              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
                 {head}
                 <div className="mb-6 flex flex-col">{mocks[i]}</div>
                 {claim}
@@ -326,7 +330,7 @@ export function Services() {
           }
 
           return (
-            <article key={item.n} className="card card--lift flex flex-col p-6 md:p-7">
+            <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
               {head}
               {claim}
               {body}

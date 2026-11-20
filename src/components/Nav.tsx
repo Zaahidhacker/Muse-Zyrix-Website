@@ -113,73 +113,81 @@ export default function Nav() {
         </div>
       </header>
 
-      {open ? (
-        <div
-          id="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Menu"
-          className="fixed inset-0 z-[60] flex flex-col bg-coal text-cream"
-        >
-          <div className="flex h-[var(--nav)] items-center justify-between px-6">
-            <span className="nav__wordmark flex items-center gap-2">
-              <span className="mark-arc" aria-hidden="true">
-                Z
-              </span>
-              <span>ZYRIX®</span>
+      {/* Slide-in panel (Unseen-style): always mounted so it can slide
+          in from the right; hidden off-canvas with visibility + inert
+          while closed. The backdrop is a flat dim — no blur, per the
+          brief's small-scrims-only rule. */}
+      <div
+        className={`menu-backdrop${open ? " menu-backdrop--open" : ""}`}
+        aria-hidden="true"
+        onClick={close}
+      />
+      <div
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        inert={!open}
+        className={`menu-panel${open ? " menu-panel--open" : ""}`}
+      >
+        <div className="flex h-[var(--nav)] items-center justify-between px-6">
+          <span className="nav__wordmark flex items-center gap-2">
+            <span className="mark-arc" aria-hidden="true">
+              Z
             </span>
-            <button
-              ref={closeRef}
-              type="button"
-              onClick={close}
-              aria-label="Close menu"
-              className="flex h-11 w-11 items-center justify-center rounded-md border border-white/20 text-2xl leading-none"
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <nav
-            className="flex flex-1 flex-col justify-center gap-2 px-6"
-            aria-label="Mobile"
+            <span>ZYRIX®</span>
+          </span>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={close}
+            aria-label="Close menu"
+            className="flex h-11 w-11 items-center justify-center rounded-md border border-white/20 text-2xl leading-none"
           >
-            {NAV.links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={close}
-                className="display py-3 text-4xl"
-              >
-                {l.label}
-              </a>
-            ))}
-            <div className="pt-6">
-              <Btn href={NAV.ctaHref} onClick={close}>
-                {NAV.cta}
-              </Btn>
-            </div>
-            <div className="hairline-t mt-8 flex flex-col gap-4 pt-6">
-              <p>
-                <span className="label muted mr-3">WHATSAPP</span>
-                <a
-                  href={CONTACT.whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={close}
-                  className="link"
-                >
-                  {CONTACT.whatsappDisplay}
-                </a>
-              </p>
-              <p>
-                <span className="label muted mr-3">EMAIL</span>
-                <a href={CONTACT.emailUrl} onClick={close} className="link">
-                  {CONTACT.emailDisplay}
-                </a>
-              </p>
-            </div>
-          </nav>
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
-      ) : null}
+        <nav
+          className="flex flex-1 flex-col justify-center gap-2 px-6"
+          aria-label="Mobile"
+        >
+          {NAV.links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={close}
+              className="menu-link display py-3 text-4xl"
+            >
+              {l.label}
+            </a>
+          ))}
+          <div className="pt-6">
+            <Btn href={NAV.ctaHref} onClick={close}>
+              {NAV.cta}
+            </Btn>
+          </div>
+          <div className="hairline-t mt-8 flex flex-col gap-4 pt-6">
+            <p>
+              <span className="label muted mr-3">WHATSAPP</span>
+              <a
+                href={CONTACT.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={close}
+                className="link"
+              >
+                {CONTACT.whatsappDisplay}
+              </a>
+            </p>
+            <p>
+              <span className="label muted mr-3">EMAIL</span>
+              <a href={CONTACT.emailUrl} onClick={close} className="link">
+                {CONTACT.emailDisplay}
+              </a>
+            </p>
+          </div>
+        </nav>
+      </div>
     </>
   );
 }

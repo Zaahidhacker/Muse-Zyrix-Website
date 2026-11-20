@@ -44,18 +44,26 @@ function CardIcon({ index }: { index: number }): ReactNode {
 }
 
 export default function Risk() {
+  // "website." is the live site's own italic-serif emphasis word.
+  const [headStart] = RISK.h2.split("website.");
   return (
     <Section id="risk" h={1} tone="dark" attrs={{ "data-statement": "" }}>
       {/* No eyebrow exists for this section in content.ts, so the head is
           built by hand instead of via SectionHead (which requires one). */}
       <div className="mb-12 md:mb-16">
-        <h2 className="display">{RISK.h2}</h2>
-        <p className="lead muted mt-5">{RISK.body}</p>
+        <h2 className="display" data-reveal-words>
+          {headStart}
+          <em className="serif-accent">website.</em>
+        </h2>
+        <p className="lead muted mt-5" data-reveal>
+          {RISK.body}
+        </p>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2" data-reveal-stagger>
         {RISK.cards.map((card, i) => (
           <article
             key={card.title}
+            data-reveal-item
             className="rounded-[var(--radius-md)] bg-cream p-8 text-coal"
           >
             <CardIcon index={i} />

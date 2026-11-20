@@ -174,11 +174,11 @@ function ClaimText({ claim }: { claim: string }) {
 
 export function Work() {
   return (
-    <Section id="work" h={2} hm={3}>
-      <SectionHead eyebrow={WORK.eyebrow} title={WORK.h2} lead={WORK.meta} />
-      <div className="grid flex-1 grid-cols-1 gap-5 lg:grid-cols-3">
+    <Section id="work" h={2} hm={3} attrs={{ "data-dim-orb": "" }}>
+      <SectionHead eyebrow={WORK.eyebrow} title={WORK.h2} lead={WORK.meta} scrim />
+      <div className="grid flex-1 grid-cols-1 gap-5 lg:grid-cols-3" data-reveal-stagger>
         {WORK.items.map((item) => (
-          <article key={item.n} className="card card--lift flex flex-col p-6 md:p-7">
+          <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
             <div className="mb-5 flex items-baseline justify-between gap-4">
               <span className="label muted">{item.n}</span>
               <span className="label">{item.title}</span>

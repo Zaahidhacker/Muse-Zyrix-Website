@@ -40,25 +40,57 @@ export function Eyebrow({ children }: { children: ReactNode }) {
   return <p className="eyebrow">{children}</p>;
 }
 
+/**
+ * Two-voice headlines, Unseen-style: the last word of a string title
+ * sits in thin italic serif against the condensed display face.
+ * ReactNode titles pass through unchanged. Styling only — no copy
+ * changes, so the accessible name is untouched.
+ */
+function accentTitle(title: ReactNode): ReactNode {
+  if (typeof title !== "string") return title;
+  const words = title.split(" ");
+  if (words.length < 2) {
+    return <em className="serif-accent">{title}</em>;
+  }
+  const last = words[words.length - 1];
+  const rest = words.slice(0, -1).join(" ");
+  return (
+    <>
+      {rest}{" "}
+      <em className="serif-accent">{last}</em>
+    </>
+  );
+}
+
 export function SectionHead({
   index,
   eyebrow,
   title,
   lead,
+  scrim = false,
 }: {
   index?: string;
   eyebrow: string;
   title: ReactNode;
   lead?: string;
+  /** Frosted scrim behind the head (dark sections only — cream
+      sections are already opaque). */
+  scrim?: boolean;
 }) {
   return (
-    <div className="mb-12 md:mb-16">
-      <p className="eyebrow mb-4">
+    <div className={`${scrim ? "scrim " : ""}mb-12 md:mb-16`}>
+      <p className="eyebrow mb-4" data-reveal>
         {index ? `${index} / ` : ""}
         {eyebrow}
       </p>
-      <h2 className="display">{title}</h2>
-      {lead ? <p className="lead muted mt-5">{lead}</p> : null}
+      <h2 className="display" data-reveal-words>
+        {accentTitle(title)}
+      </h2>
+      {lead ? (
+        <p className="lead muted mt-5" data-reveal>
+          {lead}
+        </p>
+      ) : null}
     </div>
   );
 }

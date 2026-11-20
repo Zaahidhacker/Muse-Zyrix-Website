@@ -58,13 +58,13 @@ export function Promise() {
   }, []);
 
   return (
-    <Section id="promise" h={2}>
-      <SectionHead eyebrow={PROMISE.eyebrow} title={PROMISE.h2} lead={PROMISE.note} />
+    <Section id="promise" h={2} attrs={{ "data-dim-orb": "" }}>
+      <SectionHead eyebrow={PROMISE.eyebrow} title={PROMISE.h2} lead={PROMISE.note} scrim />
       <div ref={wrapRef} className="flex flex-1 flex-col justify-between gap-10 md:gap-14">
         {/* Counter: the "60,000 → ÷2 → 30,000" stack stays vertical on the
             left; the Zyrix lines sit beside it on md+, so the block spans
             the container width instead of leaving side space. */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-center">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-center" data-reveal>
           <div>
             <p className="label muted">{PROMISE.marketLabel}</p>
             <p className="figure mt-2">
@@ -88,10 +88,11 @@ export function Promise() {
         </div>
 
         {/* Comparison table */}
-        <div data-ui="comparison-table">
+        <div data-ui="comparison-table" data-reveal-stagger>
           {PROMISE.rows.map((row, i) => (
             <div
               key={row.name}
+              data-reveal-item
               className={`flex items-baseline justify-between gap-6 py-5 ${i > 0 ? "hairline-t" : ""}`}
             >
               <span className="label">{row.name}</span>
@@ -107,7 +108,7 @@ export function Promise() {
         </div>
 
         {/* Footer row */}
-        <div className="flex flex-wrap items-center justify-start gap-4">
+        <div className="flex flex-wrap items-center justify-start gap-4" data-reveal>
           <p className="label">{PROMISE.split}</p>
           <Btn href={PROMISE.seePlansHref}>{PROMISE.seePlans}</Btn>
         </div>

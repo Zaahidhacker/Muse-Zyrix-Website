@@ -235,6 +235,18 @@ h3.display {
   max-width: 62ch;
 }
 
+/* Body copy over the live 3D scene: cream at near-full strength, never
+   the dimmed muted grey — the orb behind it washes thin text out. */
+.lead.muted,
+.measure.muted {
+  color: color-mix(in srgb, var(--p-ink) 85%, transparent);
+}
+
+.ground-inverse .lead.muted,
+.ground-inverse .measure.muted {
+  color: var(--p-inv-muted);
+}
+
 .measure {
   max-width: 62ch;
 }
@@ -249,7 +261,7 @@ h3.display {
   height: 48px;
   min-height: 44px;
   padding: 0 24px;
-  border-radius: var(--radius-sm);
+  border-radius: 999px;
   font-size: 16px;
   font-weight: 500;
   line-height: 1;
@@ -264,11 +276,31 @@ h3.display {
 .btn--primary {
   background: var(--p-action);
   color: var(--p-action-ink);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Gold flood on hover, Unseen-style: a lighter gold layer sweeps in
+   from the left under the label. No shadow anywhere — depth comes
+   from the scene, not the chrome. */
+.btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #ffcf4d;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn--primary:hover::before {
+  transform: scaleX(1);
 }
 
 .btn--primary:hover {
   transform: translateY(-2px);
-  background: #ffb61a;
 }
 
 .btn--primary:active {
@@ -360,6 +392,15 @@ h3.display {
   color: var(--p-ink);
   text-decoration: none;
   padding: 8px 0;
+}
+
+/* Unseen cue: nav links swap into thin italic serif on hover, same
+   layout box otherwise — the word changes voice, the bar doesn't move. */
+.nav__links a:hover {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0;
 }
 
 .nav__wordmark {
@@ -529,37 +570,241 @@ h3.display {
   min-height: 21px;
 }
 
-/* ---------- motion layer ---------- */
+/* ---------- motion layer: word reveals, scrims, gate, ring cursor ---------- */
 
-@keyframes hero-rise {
+/* Word masks for the split headings (RevealRig): the outer span is the
+   mask, the inner span rises out of it from blur. Inline-block + top
+   alignment keeps the line box identical to unsplit text. */
+.rv {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.rv-i {
+  display: inline-block;
+  will-change: transform, filter, opacity;
+}
+
+/* Frosted scrim: a small blurred veil behind copy that crosses the
+   orb's path. The ::before sits behind the text (isolation) and blurs
+   the fixed canvas behind it; the dark radial gradient lifts contrast
+   without a solid panel. Never full-screen — one scrim per head. */
+.scrim {
+  position: relative;
+  isolation: isolate;
+}
+
+.scrim::before {
+  content: "";
+  position: absolute;
+  inset: -18px -28px;
+  z-index: -1;
+  border-radius: 24px;
+  background: radial-gradient(
+    ellipse 90% 90% at 50% 50%,
+    rgba(5, 5, 5, 0.62),
+    rgba(5, 5, 5, 0.28) 55%,
+    rgba(5, 5, 5, 0) 78%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+@media (max-width: 639px) {
+  .scrim::before {
+    inset: -14px -16px;
+  }
+}
+
+/* Orb veil: while a text-heavy section is centred (html[data-orb-dim]),
+   the fixed canvas dims and shrinks a touch so copy wins the fight.
+   Compositor-only (opacity + transform), 700ms ease. */
+.orb-canvas {
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+
+html[data-orb-dim="1"] .orb-canvas {
+  opacity: 0.3;
+  transform: scale(0.93);
+}
+
+/* ---------- intro gate ---------- */
+
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: #050505;
+  cursor: pointer;
+  transition: transform 700ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.gate--lifting {
+  transform: translateY(-100%);
+}
+
+.gate__wordmark {
+  display: flex;
+  font-size: clamp(64px, 14vw, 160px);
+  letter-spacing: 0.02em;
+  color: var(--p-ink);
+  line-height: 1;
+  margin: 0;
+}
+
+.gate__letter {
+  display: inline-block;
+  animation: gate-letter-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.gate--fast .gate__letter {
+  animation-duration: 200ms;
+  animation-delay: 0ms !important;
+}
+
+@keyframes gate-letter-in {
   from {
     opacity: 0;
+    filter: blur(10px);
     transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.gate__line {
+  display: block;
+  width: min(320px, 60vw);
+  height: 1px;
+  background: var(--p-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: gate-line-in 500ms cubic-bezier(0.22, 1, 0.36, 1) 450ms both;
+}
+
+.gate--fast .gate__line {
+  animation-delay: 0ms;
+  animation-duration: 200ms;
+}
+
+@keyframes gate-line-in {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.gate__label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--p-muted);
+  margin: 0;
+  animation: gate-letter-in 600ms ease 650ms both;
+}
+
+.gate--fast .gate__label {
+  animation-delay: 0ms;
+  animation-duration: 200ms;
+}
+
+/* ---------- ring cursor ---------- */
+
+.ring-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--p-accent);
+  border-radius: 50%;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ---------- slide-in mobile menu ---------- */
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(5, 5, 5, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 400ms ease, visibility 0s linear 400ms;
+}
+
+.menu-backdrop--open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 400ms ease;
+}
+
+.menu-panel {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 60;
+  width: min(480px, 100%);
+  display: flex;
+  flex-direction: column;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  transform: translateX(102%);
+  visibility: hidden;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 450ms;
+}
+
+.menu-panel--open {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-panel--open .menu-link {
+  animation: menu-link-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.menu-panel--open .menu-link:nth-child(1) {
+  animation-delay: 80ms;
+}
+
+.menu-panel--open .menu-link:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.menu-panel--open .menu-link:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+.menu-panel--open .menu-link:nth-child(4) {
+  animation-delay: 260ms;
+}
+
+.menu-panel--open .menu-link:nth-child(5) {
+  animation-delay: 320ms;
+}
+
+@keyframes menu-link-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-[data-enter] > * {
-  animation: hero-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-[data-enter] > *:nth-child(2) {
-  animation-delay: 90ms;
-}
-
-[data-enter] > *:nth-child(3) {
-  animation-delay: 180ms;
-}
-
-[data-enter] > *:nth-child(4) {
-  animation-delay: 270ms;
-}
-
-[data-enter] > *:nth-child(5) {
-  animation-delay: 360ms;
 }
 
 @keyframes pulse-dot {
@@ -610,10 +855,11 @@ h3.display {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-enter] > * {
-    animation: none;
-  }
-  .pulse-dot {
+  .pulse-dot,
+  .gate__letter,
+  .gate__line,
+  .gate__label,
+  .menu-link {
     animation: none;
   }
   *,
@@ -641,13 +887,6 @@ h3.display {
   .orb-stage {
     min-height: 120px;
   }
-}
-
-/* The stage never takes the hero entrance transform: it holds the fixed
-   canvas, and a transform on an ancestor would re-parent the fixed
-   element mid-entrance. */
-[data-enter] > .orb-stage {
-  animation: none;
 }
 
 .orb-fallback {

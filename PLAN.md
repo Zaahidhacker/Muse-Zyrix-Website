@@ -73,6 +73,49 @@ canvas with a CSS torus poster fallback when WebGL is unavailable.
 POST /api/plan: server-validated; Resend when RESEND_API_KEY is set, else a
 WhatsApp deep link so no enquiry is ever lost.
 
+## Motion + legibility pass (2026-11-20, user feedback on the live site)
+
+The background/3D was praised ("insane, smooth, doesn't lag") but the text
+sat still and blended into the orb. Fixes, all in the black/gold brief
+(Unseen Studio as a motion/typography/legibility reference only — no
+rebrand, no copy/price/link changes):
+
+- **Intro gate** (`src/components/Gate.tsx` + `src/lib/gate-state.ts`):
+  black curtain, ZYRIX letters stagger in from blur, a thin gold line
+  draws across, then the gate lifts (~700ms curtain). Total <1.4s first
+  visit; returning visitors get a 350ms lift (sessionStorage
+  `zyrix-gate-seen`); click to skip; fully disabled under
+  prefers-reduced-motion. Dispatches `zyrix:gate-done` at lift start.
+- **Scroll reveals** (`src/components/RevealRig.tsx`): every section
+  heading splits into word masks (`.rv` / `.rv-i`) that rise from
+  blur(8px) + 110% offset, ~50ms stagger, once, via GSAP ScrollTrigger;
+  eyebrows/leads/cards/tables/FAQ items fade + rise 24px; card grids
+  animate as staggered batches. Hero reveals are paused until the gate
+  lifts. Reduced motion: nothing is created (DOM untouched). Gentle
+  mode (`html[data-motion="lite"]`): opacity fades only, no blur/rise.
+  Splitting keeps spaces as real text nodes, so wrapping and accessible
+  names are unchanged.
+- **Legibility scrims**: `.scrim` — a small frosted veil
+  (backdrop-filter blur(16px) + dark radial gradient) behind hero copy
+  and dark-section heads only; never full-screen. Plus an orb veil:
+  sections marked `data-dim-orb` dim the fixed canvas to 30% opacity
+  and scale 0.93 while centred (`html[data-orb-dim]`). Body copy
+  (`.lead.muted`, `.measure.muted`) is cream at 85% instead of the dim
+  muted grey on dark grounds.
+- **Unseen cues, black/gold**: two-voice headlines — the last word of
+  every major h2 and the hero's "rate." sit in thin italic serif (the
+  already-loaded Instrument Serif; no new font weight added — Cormorant
+  was considered and skipped for that reason); nav links swap to italic
+  serif on hover; primary CTAs are pills with a gold flood hover
+  (::before scaleX sweep); the mobile menu is a 480px slide-in panel
+  from the right with a flat dim backdrop; a thin gold ring cursor
+  trails the pointer on pointer:fine desktops only (native cursor
+  stays — the ring is a halo, not a replacement). No drop shadows
+  anywhere.
+- **Perf, unchanged**: DPR cap 1.75, no new animation loops, transforms /
+  opacity / filter only, short durations (450–600ms). The old CSS
+  `[data-enter]` hero entrance was removed and replaced by the rig.
+
 ## Waivers (see .taste-skill/waivers.json)
 
 - effect-kind / WebGL on a service page: the brief explicitly asks for

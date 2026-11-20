@@ -1,4 +1,7 @@
+import Gate from "@/components/Gate";
 import ScrollRig from "@/components/ScrollRig";
+import RevealRig from "@/components/RevealRig";
+import RingCursor from "@/components/RingCursor";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import { Difference } from "@/components/Difference";
@@ -16,7 +19,10 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
+      <Gate />
       <ScrollRig />
+      <RevealRig />
+      <RingCursor />
       <Nav />
       <main>
         <Hero />
