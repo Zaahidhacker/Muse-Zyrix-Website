@@ -180,8 +180,8 @@ export function Journey() {
   };
 
   return (
-    <Section id="journey" h={2} hm={1} attrs={{ "data-dim-orb": "" }}>
-      <SectionHead eyebrow={JOURNEY.eyebrow} title={JOURNEY.h2} lead={JOURNEY.stats} scrim />
+    <Section id="journey">
+      <SectionHead title={JOURNEY.h2} lead={JOURNEY.stats} />
       <div className="grid flex-1 grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Step buttons */}
         <div className="flex flex-col gap-2" role="group" aria-label={JOURNEY.h2} data-reveal-stagger>

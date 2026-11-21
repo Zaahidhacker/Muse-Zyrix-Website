@@ -1,0 +1,30 @@
+.glare-hover {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.glare-hover__band {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--p-blue-light) 10%, transparent) 33%,
+    color-mix(in srgb, var(--p-blue-light) 37%, transparent) 50%,
+    color-mix(in srgb, var(--p-blue-light) 10%, transparent) 67%,
+    transparent
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@media (any-hover: none), (prefers-reduced-motion: reduce) {
+  .glare-hover__band {
+    display: none;
+  }
+}

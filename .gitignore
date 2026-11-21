@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Locally installed agent design tools
+/.agents/skills/
+/.claude/skills/
+/.cursor/skills/
+/agent/skills/
+/.impeccable/config.local.json

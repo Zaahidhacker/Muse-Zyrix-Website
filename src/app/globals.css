@@ -1,35 +1,15 @@
-@import "tailwindcss";
-
-/*
- * Zyrix design system — theme redesign 2026-11-21.
- * Pattern: Scroll-Triggered Storytelling (ui-ux-pro-max landing.csv #10).
- * Style: Liquid Glass, scoped to the floating nav pill + frosted scrims
- *   (styles.csv #14) — cards stay flat opaque.
- * Colours: Trust & Authority (landing.csv #33) — navy #101D49 ground,
- *   trust blue #82BODB primary, yellow #F7EB4F for CTA + 50% moments
- *   ONLY. Tokens dealt by the taste-skill `brand` flow; see PLAN.md and
- *   design-system/zyrix/pages/home.md (the page override — MASTER.md's
- *   pink/Brutalist output was rejected and is not truth).
- * Type: ONE typeface, Manrope (landing-page skill B1). No italics.
- *   Sizes snapped to the Tailwind scale, closest step below; named
- *   text styles heading-1..caption-5 as reusable classes.
- * Motion: B7 base curve cubic-bezier(0.22,1,0.36,1); duration-500
- *   movement / duration-300 colour-opacity; transform + opacity only.
- * Tokens are three-layer (design-system skill): primitive (@theme)
- *   → semantic (:root --p-*) → component (classes below). No raw hex
- *   in components.
- */
+@import "tailwindcss" source("../");
 
 @theme {
   --color-navy: #101d49;
   --color-panel: #182751;
   --color-panel2: #1e2f5c;
-  --color-blue: #82bodb;
+  --color-blue: #82b0db;
   --color-blue-light: #a9d1e4;
   --color-accent: #f7eb4f;
   --color-mist: #eaf2f7;
-  --color-foam: #dcebf2;
-  --color-muted: #8694ac;
+  --color-foam: #dceaf7;
+  --color-muted: #a6b7d0;
   --color-muted-dark: #536284;
 
   --font-sans: "Manrope", system-ui, sans-serif;
@@ -39,23 +19,19 @@
   --radius-sm: 8px;
 
   --z-nav: 50;
-  --z-menu-backdrop: 55;
-  --z-menu: 60;
-  --z-gate: 100;
-  --z-cursor: 200;
 }
 
 :root {
-  --p-bg: #101d49;
+  --p-bg: var(--color-navy);
   --p-surface: #182751;
   --p-ink: #eaf2f7;
-  --p-muted: #8694ac;
+  --p-muted: #a6b7d0;
   --p-accent: #f7eb4f;
   --p-accent-ink: #101d49;
   --p-action: #f7eb4f;
   --p-action-ink: #101d49;
-  --p-blue: #82bodb;
-  --p-blue-light: #a9d1e4;
+  --p-blue: var(--color-blue);
+  --p-blue-light: var(--color-blue-light);
   --p-inv-bg: #eaf2f7;
   --p-inv-surface: #d8e2ea;
   --p-inv-ink: #101d49;
@@ -64,18 +40,15 @@
   --p-inv-accent-ink: #eaf2f7;
   --p-inv-action: #101d49;
   --p-inv-action-ink: #eaf2f7;
-  --p-foam: #dcebf2;
+  --p-foam: #dceaf7;
 
   --nav: 72px;
-  --padt: 96px;
-  --padb: 72px;
-  --gut: 80px;
-  --hgap: 48px;
+  --section-pad: clamp(4rem, 9vw, 8.5rem);
+  --gut: clamp(1.25rem, 5vw, 5rem);
+  --rule: color-mix(in srgb, var(--p-blue) 29%, transparent);
 
   --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
-  --display-weight: 600;
   --display-tracking: -0.03em;
-  --display-tracking-xl: -0.038em;
 
   --icon-sm: 16px;
   --icon-md: 20px;
@@ -85,11 +58,7 @@
 
 @media (max-width: 639px) {
   :root {
-    --nav: 56px;
-    --padt: 64px;
-    --padb: 48px;
-    --gut: 24px;
-    --hgap: 24px;
+    --nav: 64px;
   }
 }
 
@@ -98,9 +67,9 @@
 }
 
 html {
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
   /* WCAG 2.2 focus-not-obscured: anchor jumps clear the floating nav. */
-  scroll-padding-top: var(--nav);
+  scroll-padding-top: calc(var(--nav) + 1rem);
 }
 
 html,
@@ -116,24 +85,12 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  caret-color: var(--p-blue);
 }
 
 ::selection {
   background: var(--p-accent);
   color: var(--p-accent-ink);
-}
-
-/* Grain for flat surfaces (no gradients to solve flatness): a static
-   SVG-noise layer, fixed above the canvas (z -1) and below all content
-   (.wrap is z 1). Opacity is deliberately low so text stays clean. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
 /* ---------- layout shell ---------- */
@@ -144,28 +101,13 @@ body::after {
 }
 
 .section {
-  height: calc(var(--h, 1) * 100svh);
-  padding-top: var(--padt);
-  padding-bottom: var(--padb);
+  padding-block: var(--section-pad);
   position: relative;
-  display: flex;
-  flex-direction: column;
+  border-top: 1px solid var(--rule);
 }
 
-.section > .wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  position: relative;
-  z-index: 1;
-}
-
-@media (max-width: 1023px) {
-  .section {
-    height: auto;
-    min-height: calc(var(--hm, var(--h, 1)) * 100svh);
-  }
+.section-head {
+  margin-bottom: clamp(2rem, 5vw, 4rem);
 }
 
 .ground-inverse {
@@ -390,14 +332,8 @@ body::after {
   line-height: 1.05;
 }
 
-h1.display {
-  font-size: 72px;
-  letter-spacing: var(--display-tracking-xl);
-  text-wrap: balance;
-}
-
 h2.display {
-  font-size: 60px;
+  font-size: clamp(2.25rem, 5.4vw, 4.75rem);
   text-wrap: balance;
 }
 
@@ -409,12 +345,6 @@ h3.display {
 }
 
 @media (max-width: 639px) {
-  h1.display {
-    font-size: 48px;
-  }
-  h2.display {
-    font-size: 36px;
-  }
   h3.display {
     font-size: 20px;
   }
@@ -466,22 +396,6 @@ h3.display {
   min-height: 44px;
 }
 
-.eyebrow {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  /* Accent is for CTA + 50% moments only: eyebrows are the primary.
-     Text on navy uses the light tint — plain #82BODB is only 2.33:1
-     on navy; #A9D1E4 is 9.99:1. */
-  color: var(--p-blue-light);
-}
-
-.ground-inverse .eyebrow {
-  color: var(--p-inv-ink);
-}
-
 .label {
   font-family: var(--font-sans);
   font-size: 12px;
@@ -520,13 +434,6 @@ h3.display {
   max-width: 62ch;
 }
 
-/* Hero heading: solid mist. (B5's white → blue-light text gradient was
-   removed 2026-11-21: background-clip:text does not paint on the h1 in
-   the verification browser — the headline was invisible — while a fresh
-   gradient div on the same page paints fine, so the h1's compositing
-   context over the live WebGL canvas is the trigger. Solid mist is
-   14.33:1, matches the motion pass the user praised, and is robust
-   everywhere. The .hero-gradient rule was deleted with it.) */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -655,157 +562,6 @@ h3.display {
   color: var(--p-inv-ink);
 }
 
-/* ---------- nav: floating compact pill (B7), Liquid Glass ---------- */
-
-.nav {
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(100% - 32px, 1280px);
-  height: 56px;
-  background: color-mix(in srgb, var(--p-bg) 72%, transparent);
-  /* Prefixed first, standard last: Lightning CSS keeps the last
-     declaration for the same logical property, so the standard
-     backdrop-filter must come last or it is dropped. */
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  backdrop-filter: blur(16px) saturate(1.4);
-  border: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
-  border-radius: 999px;
-  z-index: 50;
-}
-
-/* While the menu is open the pill stays above the panel so its toggle
-   (morphing to an X) remains the close control. */
-.nav[data-menu-open="true"] {
-  z-index: 70;
-}
-
-.nav .wrap {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 0 8px 0 20px;
-}
-
-.nav__links {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.nav__links a {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--p-ink);
-  text-decoration: none;
-  padding: 8px 0;
-  transition: color 300ms ease;
-}
-
-.nav__links a:hover {
-  color: var(--p-blue-light);
-}
-
-/* Current section, indicated (B9). */
-.nav__links a[data-active="true"] {
-  color: var(--p-blue-light);
-}
-
-.nav__wordmark {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.02em;
-  color: var(--p-ink);
-  text-decoration: none;
-  line-height: 1;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.mark-arc {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1.5px solid var(--p-blue-light);
-  border-radius: 999px;
-  color: var(--p-blue-light);
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 1;
-  flex: none;
-}
-
-.progress-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 32px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--p-ink) 20%, transparent);
-  font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--p-muted);
-  white-space: nowrap;
-}
-
-.progress-pill .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--p-blue-light);
-}
-
-/* Hamburger that morphs into an X (B7). Lines are 2px on a 6px gap
-   (8px pitch): open state moves top +8px and bottom -8px so all three
-   centres meet, then rotates. */
-.menu-toggle {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.menu-toggle__line {
-  display: block;
-  width: 20px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--p-ink);
-  transition: transform 300ms var(--ease-base), opacity 300ms ease;
-}
-
-.menu-toggle[aria-expanded="true"] .menu-toggle__line--top {
-  transform: translateY(8px) rotate(45deg);
-}
-
-.menu-toggle[aria-expanded="true"] .menu-toggle__line--mid {
-  opacity: 0;
-}
-
-.menu-toggle[aria-expanded="true"] .menu-toggle__line--bottom {
-  transform: translateY(-8px) rotate(-45deg);
-}
-
-/* ---------- cards & panels ---------- */
-
 .card {
   background: var(--p-surface);
   border: 1px solid color-mix(in srgb, var(--p-ink) 10%, transparent);
@@ -832,18 +588,6 @@ h3.display {
    no lift, only a border change on hover; the featured tier (Business,
    the 50% benchmark) carries a yellow border. One card layout at most
    twice per page. */
-.card--tier {
-  transition: border-color 300ms ease;
-}
-
-.card--tier:hover {
-  border-color: color-mix(in srgb, var(--p-blue-light) 55%, transparent);
-}
-
-.card--featured {
-  border-color: color-mix(in srgb, var(--p-accent) 70%, transparent);
-}
-
 .panel {
   background: var(--p-surface);
   border: 1px solid color-mix(in srgb, var(--p-ink) 10%, transparent);
@@ -882,6 +626,11 @@ h3.display {
   font-size: 16px;
   outline: none;
   transition: border-color 300ms ease;
+}
+
+.field textarea::placeholder {
+  color: var(--p-blue-light);
+  opacity: 1;
 }
 
 .field textarea {
@@ -944,299 +693,15 @@ h3.display {
   color: var(--p-ink);
 }
 
-/* ---------- motion layer: word reveals, scrims, gate, ring cursor ---------- */
-
-/* Word masks for the split headings (RevealRig): the outer span is the
-   mask, the inner span rises out of it from blur. Inline-block + top
-   alignment keeps the line box identical to unsplit text. */
-.rv {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-}
-
-.rv-i {
-  display: inline-block;
-  will-change: transform, filter, opacity;
-}
-
-/* Char spans inside word masks (hero headline, SplitText). */
-.rc-i {
-  display: inline-block;
-  will-change: transform, opacity;
-}
-
-/* B11 tagline reveal: words start at ~30% ink and transition
-   individually to full colour in reading order (the delay is set per
-   word inline). Reduced motion shows the final text immediately. */
-.tagline-word {
-  opacity: 0.3;
-  transition: opacity 600ms var(--ease-base);
-}
-
-.tagline-word--on {
-  opacity: 1;
-}
-
-/* Frosted scrim: a small flat translucent veil behind copy that
-   crosses the orb's path (Liquid Glass: blur 16px + saturate, 1px
-   highlight border, inset top light). The ::before sits behind the
-   text (isolation). Never full-screen — one scrim per head. */
-.scrim {
-  position: relative;
-  isolation: isolate;
-}
-
-.scrim::before {
-  content: "";
-  position: absolute;
-  inset: -16px -24px;
-  z-index: -1;
-  border-radius: 24px;
-  background: rgba(16, 29, 73, 0.55);
-  /* Prefixed first, standard last (see .nav): Lightning CSS keeps
-     the last declaration for the same logical property. */
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  backdrop-filter: blur(16px) saturate(1.4);
-  border: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--p-ink) 14%, transparent);
-}
-
-.ground-inverse .scrim::before {
-  background: rgba(220, 235, 242, 0.6);
-  border-color: color-mix(in srgb, var(--p-inv-ink) 12%, transparent);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--p-inv-ink) 14%, transparent);
-}
-
-@media (max-width: 639px) {
-  .scrim::before {
-    inset: -14px -16px;
-  }
-}
-
-/* Orb veil: while a text-heavy section is centred (html[data-orb-dim]),
-   the fixed canvas dims and shrinks a touch so copy wins the fight.
-   Compositor-only (opacity + transform), 700ms on the base curve. */
-.orb-canvas {
-  transition: opacity 700ms var(--ease-base), transform 700ms var(--ease-base);
-}
-
-html[data-orb-dim="1"] .orb-canvas {
-  opacity: 0.3;
-  transform: scale(0.93);
-}
-
-/* ---------- intro gate ---------- */
-
-.gate {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  background: var(--p-bg);
-  cursor: pointer;
-  transition: transform 700ms var(--ease-base);
-}
-
-.gate--lifting {
-  transform: translateY(-100%);
-}
-
-.gate__wordmark {
-  display: flex;
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: clamp(64px, 14vw, 160px);
-  letter-spacing: 0.02em;
-  color: var(--p-ink);
-  line-height: 1;
-  margin: 0;
-}
-
-.gate__letter {
-  display: inline-block;
-  animation: gate-letter-in 600ms var(--ease-base) both;
-}
-
-.gate--fast .gate__letter {
-  animation-duration: 200ms;
-  animation-delay: 0ms !important;
-}
-
-@keyframes gate-letter-in {
-  from {
-    opacity: 0;
-    filter: blur(10px);
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateY(0);
-  }
-}
-
-.gate__line {
-  display: block;
-  width: min(320px, 60vw);
-  height: 1px;
-  background: var(--p-accent);
-  transform: scaleX(0);
-  transform-origin: left center;
-  animation: gate-line-in 500ms var(--ease-base) 450ms both;
-}
-
-.gate--fast .gate__line {
-  animation-delay: 0ms;
-  animation-duration: 200ms;
-}
-
-@keyframes gate-line-in {
-  to {
-    transform: scaleX(1);
-  }
-}
-
-.gate__label {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  color: var(--p-muted);
-  margin: 0;
-  animation: gate-letter-in 600ms ease 650ms both;
-}
-
-.gate--fast .gate__label {
-  animation-delay: 0ms;
-  animation-duration: 200ms;
-}
-
-/* ---------- ring cursor ---------- */
-
-.ring-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--p-blue-light);
-  border-radius: 50%;
-  z-index: 200;
-  pointer-events: none;
-  opacity: 0;
-}
-
-/* ---------- slide-in mobile menu ---------- */
-
-.menu-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 55;
-  background: rgba(16, 29, 73, 0.65);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 400ms ease, visibility 0s linear 400ms;
-}
-
-.menu-backdrop--open {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 400ms ease;
-}
-
-.menu-panel {
-  position: fixed;
-  inset: 0 0 0 auto;
-  z-index: 60;
-  width: min(480px, 100%);
-  display: flex;
-  flex-direction: column;
-  background: var(--p-bg);
-  color: var(--p-ink);
-  /* Top padding clears the floating nav pill (12px + 56px). The
-     pill stays above the panel (z 70) so its morphing toggle is the
-     close control — no close button inside the panel. */
-  padding: 96px 32px 32px;
-  transform: translateX(102%);
-  visibility: hidden;
-  transition: transform 450ms var(--ease-base), visibility 0s linear 450ms;
-}
-
-.menu-panel--open {
-  transform: translateX(0);
-  visibility: visible;
-  transition: transform 450ms var(--ease-base);
-}
-
-.menu-panel--open .menu-link {
-  animation: menu-link-in 500ms var(--ease-base) both;
-}
-
-.menu-panel--open .menu-link:nth-child(1) {
-  animation-delay: 60ms;
-}
-
-.menu-panel--open .menu-link:nth-child(2) {
-  animation-delay: 120ms;
-}
-
-.menu-panel--open .menu-link:nth-child(3) {
-  animation-delay: 180ms;
-}
-
-.menu-panel--open .menu-link:nth-child(4) {
-  animation-delay: 240ms;
-}
-
-.menu-panel--open .menu-link:nth-child(5) {
-  animation-delay: 300ms;
-}
-
-@keyframes menu-link-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse-dot {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-}
-
-.pulse-dot {
-  animation: pulse-dot 1.6s ease-in-out infinite;
-}
-
-/* ---------- accessibility ---------- */
-
 .closing {
-  /* Exactly one screen tall (SR-2): the closing footer is a section too. */
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  border-top: 1px solid var(--rule);
 }
 
 .skip-link {
   position: absolute;
   left: var(--gut);
-  top: -100px;
+  top: calc(var(--nav) + 0.5rem);
+  clip-path: inset(50%);
   z-index: 100;
   background: var(--p-accent);
   color: var(--p-accent-ink);
@@ -1244,12 +709,10 @@ html[data-orb-dim="1"] .orb-canvas {
   border-radius: var(--radius-sm);
   font-weight: 500;
   text-decoration: none;
-  transition: top 160ms ease;
 }
 
 .skip-link:focus {
-  /* Below the floating pill (12px + 56px), not on top of it. */
-  top: 76px;
+  clip-path: none;
 }
 
 /* Visible focus ring on every interactive control (3:1 state
@@ -1264,13 +727,7 @@ html[data-orb-dim="1"] .orb-canvas {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pulse-dot,
-  .gate__letter,
-  .gate__line,
-  .gate__label,
-  .menu-link {
-    animation: none;
-  }
+  html { scroll-behavior: auto; }
   *,
   *::before,
   *::after {
@@ -1280,40 +737,460 @@ html[data-orb-dim="1"] .orb-canvas {
   }
 }
 
-/* ---------- 3D stage ---------- */
-
-.orb-stage {
-  position: relative;
-  width: 100%;
-  flex: 1;
-  min-height: 240px;
+/* Homepage */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  height: var(--nav);
+  background: var(--p-bg);
+  border-bottom: 1px solid var(--rule);
 }
 
-/* On phones the hero must end at the fold (844px): the stage is a spacer
-   for the fixed canvas, so it shrinks to 120px and the hero fits. */
-@media (max-width: 639px) {
-  /* Hero-fold: 120px stage keeps the 390px hero at exactly 844px (the fold). */
-  .orb-stage {
-    min-height: 120px;
-  }
-}
-
-.orb-fallback {
-  position: absolute;
-  inset: 0;
+.nav .wrap {
   display: flex;
   align-items: center;
-  justify-content: center;
-  pointer-events: none;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 100%;
 }
 
-/* Flat blue ring poster (no gradients, B4) with a tinted glow. */
-.orb-fallback .torus {
-  width: min(52vw, 520px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: clamp(18px, 3.4vw, 42px) solid var(--p-blue);
-  box-shadow:
-    0 0 90px rgba(130, 176, 219, 0.35),
-    inset 0 0 60px rgba(16, 29, 73, 0.55);
+.nav__wordmark,
+.nav__price,
+.nav__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
+
+.nav__wordmark {
+  gap: 0.55rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mark-arc {
+  display: grid;
+  width: 2rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--p-blue);
+  border-radius: 50%;
+  color: var(--p-blue);
+  font-size: 0.95rem;
+}
+
+.nav__links {
+  display: flex;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+}
+
+.nav__links a,
+.nav__price {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  transition: color 180ms ease;
+}
+
+.nav__links a:hover,
+.nav__links a[aria-current="location"] {
+  color: var(--p-blue);
+  text-decoration: underline;
+  text-underline-offset: 0.4em;
+}
+
+.nav__price {
+  gap: 0.65rem;
+  color: var(--p-blue);
+}
+
+.nav__price:hover { color: var(--p-ink); }
+
+.nav__toggle {
+  display: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.mobile-menu {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(100%, 27rem);
+  max-width: none;
+  max-height: none;
+  height: 100dvh;
+  background: var(--p-bg);
+  color: var(--p-ink);
+}
+
+.mobile-menu[open] {
+  animation: menu-in 280ms var(--ease-base) both;
+}
+
+.mobile-menu::backdrop { background: rgb(4 10 26 / 65%); }
+html:has(.mobile-menu[open]) { overflow: hidden; }
+
+.mobile-menu__body {
+  min-height: 100%;
+  padding: 1.25rem var(--gut) 2rem;
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 1.5rem;
+}
+
+.mobile-menu__close {
+  display: grid;
+  justify-self: end;
+}
+
+.mobile-menu__links {
+  display: grid;
+  width: 100%;
+}
+
+.mobile-menu__links a {
+  min-height: 3rem;
+  padding-block: 0.65rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: clamp(1.2rem, 5vw, 1.7rem);
+  font-weight: 700;
+}
+
+.mobile-menu__contact {
+  color: var(--p-blue-light);
+  display: grid;
+}
+
+@keyframes menu-in {
+  from { transform: translateX(100%); }
+}
+
+.hero {
+  position: relative;
+  overflow: clip;
+  display: grid;
+  align-items: center;
+  min-height: min(52rem, calc(100svh - var(--nav)));
+  padding-block: clamp(3rem, 6.7vw, 6rem);
+}
+
+.hero__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.03fr) minmax(0, 1fr);
+  column-gap: clamp(0.75rem, 2.5vw, 2.25rem);
+  align-items: center;
+}
+
+.hero__copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__title {
+  font-size: clamp(2.8rem, 4.6vw, 4.25rem);
+  line-height: 0.99;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.hero__title span {
+  display: block;
+  margin-top: 0.08em;
+  color: var(--p-blue);
+}
+
+.hero__lead {
+  margin-top: clamp(1.1rem, 2.9vw, 1.9rem);
+  color: var(--p-ink);
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.hero__actions .btn,
+.hero__compare {
+  gap: 0.55rem;
+}
+
+.hero__compare { color: var(--p-blue-light); }
+
+.hero__art {
+  position: relative;
+  isolation: isolate;
+  margin: 0 calc(-1 * min(2vw, 2rem)) 0 0;
+  min-width: 0;
+  aspect-ratio: 1.21;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--p-surface);
+  animation: open-frame 900ms var(--ease-base) both;
+}
+
+.hero__image {
+  object-fit: cover;
+  object-position: center;
+  animation: settle-image 1350ms var(--ease-base) both;
+}
+
+@keyframes open-frame {
+  from { clip-path: inset(0 0 0 11%); }
+  to { clip-path: inset(0); }
+}
+
+@keyframes settle-image {
+  from { transform: scale(1.085); }
+  to { transform: scale(1); }
+}
+
+.difference-layout,
+.promise-layout,
+.faq-layout,
+.contact-layout {
+  display: grid;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+}
+
+.difference-list li {
+  display: grid;
+  gap: 0.4rem;
+  padding-block: 0.95rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.difference-list li:first-child { border-top: 1px solid var(--rule); }
+
+.difference-list s,
+.difference-list span {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.difference-list s {
+  color: var(--p-muted);
+  font-size: 0.875rem;
+}
+
+.difference-list span {
+  color: var(--p-blue-light);
+  font-weight: 700;
+}
+
+#result { padding-block: clamp(4rem, 7.8vw, 7rem); }
+.result-layout { max-width: 63rem; }
+.result-layout h2 { color: var(--p-blue-light); }
+.result-pitch {
+  font-size: clamp(1.75rem, 4.4vw, 3.9rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.pitch-word { margin-inline-end: 0.26em; }
+
+.promise-layout h2 span { color: var(--p-blue); }
+.promise-price { margin-block: 2rem 0.65rem; }
+.promise-price dt { color: var(--p-muted); }
+.promise-price dd { font-size: 1.25rem; font-weight: 700; }
+.promise-price div + div { margin-top: 1rem; }
+.promise-price .promise-price__offer {
+  color: var(--p-accent);
+  font-size: clamp(2.9rem, 6vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+.promise-price__offer span { font-size: 0.38em; letter-spacing: normal; }
+.promise-compare {
+  padding: clamp(1.1rem, 3vw, 2rem);
+  background: var(--p-surface);
+  border-radius: var(--radius-md);
+}
+.promise-compare table { width: 100%; border-collapse: collapse; }
+.promise-compare th,
+.promise-compare td { text-align: left; padding-block: 0.85rem; }
+.promise-compare tr { border-bottom: 1px solid var(--rule); }
+.promise-compare th { font-size: 0.83rem; }
+.promise-compare td { font-variant-numeric: tabular-nums; }
+.promise-compare td:nth-child(2) { color: var(--p-blue-light); font-weight: 700; }
+.promise-compare td:last-child { color: var(--p-muted); }
+
+.price-list { border-top: 1px solid color-mix(in srgb, var(--p-bg) 27%, transparent); }
+.price-tier {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 1.5rem clamp(1rem, 4vw, 3.75rem);
+  padding: clamp(1.5rem, 3vw, 2.75rem) 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--p-bg) 27%, transparent);
+}
+.price-tier__figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.5rem;
+  margin-top: 0.5rem;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+.price-tier__figure span { font-size: 0.35em; letter-spacing: normal; }
+.price-tier__includes,
+.price-tier__action { display: grid; gap: 0.4rem; align-content: center; }
+.price-tier__includes li { display: flex; align-items: baseline; gap: 0.6rem; }
+.price-tier__includes svg { flex: none; align-self: center; }
+.price-tier__action .btn { justify-self: start; margin-top: 0.35rem; }
+
+.faq-list details { border-bottom: 1px solid var(--rule); }
+.faq-list details:first-child { border-top: 1px solid var(--rule); }
+.faq-list summary,
+.work-demo summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  cursor: pointer;
+  min-height: 44px;
+}
+.faq-list summary::-webkit-details-marker,
+.work-demo summary::-webkit-details-marker { display: none; }
+.faq-list summary { padding-block: 1.15rem; font-weight: 700; }
+.faq-list summary:hover,
+.faq-list details[open] summary { color: var(--p-blue-light); }
+.faq-list summary svg,
+.work-demo summary svg { flex: none; transition: transform 180ms ease; }
+.faq-list details[open] svg,
+.work-demo[open] summary svg { transform: rotate(45deg); }
+.faq-list details p { padding: 0 2.5rem 1.25rem 0; color: var(--p-muted); }
+
+.contact-layout { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); }
+.contact-layout .section-head { margin-bottom: 1.5rem; }
+.contact-layout__form {
+  background: var(--p-surface);
+  border-radius: var(--radius-md);
+  padding: clamp(1.1rem, 3vw, 2.5rem);
+  min-width: 0;
+}
+.contact-layout__form label { color: var(--p-ink); }
+
+@media (max-width: 63.99rem) {
+  .nav__links { display: none; }
+  .nav__price { margin-left: auto; }
+  .nav__toggle { display: grid; }
+  .contact-layout,
+  .faq-layout { gap: 2rem; }
+}
+
+@media (max-width: 55.99rem) {
+  .hero { min-height: 0; padding-block: 2.4rem 1.5rem; }
+  .hero__layout { grid-template-columns: minmax(0, 1fr); }
+  .hero__title { max-width: 14em; font-size: clamp(2.35rem, 8.4vw, 4.65rem); }
+  .hero__art { margin: 1.6rem 0 0; aspect-ratio: 1.55; }
+}
+
+@media (max-width: 47.99rem) {
+  .difference-layout,
+  .promise-layout,
+  .faq-layout,
+  .contact-layout,
+  .price-tier { grid-template-columns: minmax(0, 1fr); }
+  .faq-layout .section-head { margin-bottom: 0; }
+}
+
+@media (max-width: 25rem) {
+  .nav .wrap { gap: 0.6rem; }
+  .nav__price { gap: 0.35rem; letter-spacing: 0.035em; }
+}
+
+.work-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.work-project { min-width: 0; }
+.work-project__art {
+  position: relative;
+  aspect-ratio: 1.36;
+  border-radius: var(--radius-md);
+  background: var(--p-bg);
+  overflow: hidden;
+}
+
+.work-project__art img {
+  object-fit: cover;
+  transition: transform 650ms var(--ease-base);
+}
+
+@media (hover: hover) {
+  .work-project:hover img { transform: scale(1.04); }
+}
+
+.work-project:nth-child(2) .work-project__art {
+  aspect-ratio: 1.2;
+}
+
+.work-project:nth-child(3) {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: clamp(1.25rem, 5vw, 5rem);
+}
+
+.work-project__details { padding-top: 1.25rem; }
+.work-project__claim { margin-top: 0.35rem; color: var(--p-blue-light); }
+.work-demo { margin-top: 0.85rem; border-top: 1px solid var(--rule); }
+.work-demo summary { color: var(--p-blue-light); font-weight: 700; }
+
+.contact-channels {
+  width: fit-content;
+  margin-bottom: 1rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.75rem;
+}
+
+.footer-wordmark {
+  margin-top: 1.5rem;
+  color: var(--p-blue);
+  font-size: clamp(4rem, 17vw, 15.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+}
+
+@media (max-width: 47.99rem) {
+  .work-grid,
+  .work-project:nth-child(3) { display: block; }
+  .work-project + .work-project { margin-top: 2rem; }
+  .work-project:nth-child(2) .work-project__art { aspect-ratio: 1.36; }
+}
+
+.service-item {
+  display: grid;
+  align-content: start;
+  gap: 1.15rem;
+  min-width: 0;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--rule);
+}
+
+.service-item p { text-wrap: pretty; }
+.service-item__tags { color: var(--p-blue-light); font-size: 0.8rem; }

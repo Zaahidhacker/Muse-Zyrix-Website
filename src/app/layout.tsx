@@ -3,13 +3,6 @@ import { Manrope } from "next/font/google";
 import { FAQ } from "@/lib/content";
 import "./globals.css";
 
-/*
- * Type: ONE typeface — Manrope (landing-page skill B1). The taste deal's
- * first pairing (Instrument Serif / Instrument Sans) conflicts with B1's
- * one-typeface/no-italics rule, which the parent brief made non-negotiable,
- * so Manrope replaces the printed Hanken Grotesk, keeping the dealt
- * weights/tracking. See PLAN.md (theme redesign, 2026-11-21).
- */
 const manrope = Manrope({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],

@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight } from "@phosphor-icons/react";
+import Image from "next/image";
+import { ArrowRight, Plus } from "@phosphor-icons/react";
 import { CONTACT, PRICING, WORK, formatLkr } from "@/lib/content";
 import { Section, SectionHead } from "./ui";
 
@@ -51,6 +52,7 @@ function RestaurantMock({ item }: { item: (typeof WORK.items)[0] }) {
               <span className="tnum text-sm">LKR {formatLkr(dish.price)}</span>
               <button
                 type="button"
+                aria-label={`Add ${dish.name}`}
                 className="flex min-h-11 items-center rounded-md border border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)] px-4 py-2 tnum text-xs tracking-[0.08em] transition-colors duration-300 hover:border-blue-light hover:text-blue-light"
                 onClick={() => setAdded((prev) => ({ ...prev, [dish.name]: (prev[dish.name] ?? 0) + 1 }))}
               >
@@ -163,101 +165,47 @@ function CorporateMock({ item }: { item: (typeof WORK.items)[2] }) {
   );
 }
 
-/* ---------- Section ---------- */
-
-/** Claim in the display face, last word in blue (emphasis via colour,
-    not italics — B1). */
-function ClaimText({ claim }: { claim: string }) {
-  const words = claim.split(" ");
-  const last = words[words.length - 1];
-  const rest = words.slice(0, -1).join(" ");
-  return (
-    <>
-      {rest ? `${rest} ` : ""}
-      <span className="text-blue-light">{last}</span>
-    </>
-  );
-}
+const workImages = {
+  "01": "/work-kitchen.webp",
+  "02": "/work-objects.webp",
+  "03": "/work-corporate.webp",
+};
 
 export function Work() {
   return (
-    <Section id="work" h={2} hm={3} attrs={{ "data-dim-orb": "" }}>
-      <SectionHead eyebrow={WORK.eyebrow} title={WORK.h2} lead={WORK.meta} scrim />
-      {/* Asymmetric grid (redesign skill): Koti's 7 / FORM 5, then the
-          corporate build full-width and horizontal at xl. Below xl the
-          two-column grid; corporate spans both columns at md. */}
-      <div className="grid flex-1 grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-12" data-reveal-stagger>
-        {WORK.items.map((item, i) => {
-          const head = (
-            <div className="mb-6 flex items-baseline justify-between gap-4">
-              <span className="label muted">{item.n}</span>
-              <span className="label">{item.title}</span>
+    <Section id="work" tone="surface">
+      <SectionHead title={WORK.h2} />
+      <div className="work-grid">
+        {WORK.items.map((item) => (
+          <article className="work-project" key={item.n}>
+            <div className="work-project__art">
+              <Image
+                src={workImages[item.n]}
+                alt=""
+                fill
+                sizes="(max-width: 767px) 91vw, (max-width: 1279px) 50vw, 690px"
+              />
             </div>
-          );
-          const claim = (
-            <h3 className="display--sentence mb-2">
-              <ClaimText claim={item.claim} />
-            </h3>
-          );
-          const tags = (
-            <div className="mb-6 flex flex-wrap gap-2">
-              {item.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="caption-4 rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1"
-                >
-                  {tag}
-                </span>
-              ))}
+            <div className="work-project__details">
+              <h3 className="heading-4">{item.title}</h3>
+              <p className="work-project__claim">{item.claim}</p>
+              <p className="muted text-sm">{item.tags.join(" · ")}</p>
+              <details className="work-demo">
+                <summary>
+                  Try the demo
+                  <Plus size={18} aria-hidden="true" />
+                </summary>
+                {item.n === "01" ? <RestaurantMock item={item} /> :
+                  item.n === "02" ? <FormMock item={item} /> : <CorporateMock item={item} />}
+              </details>
             </div>
-          );
-          const mock =
-            item.n === "01" ? (
-              <RestaurantMock item={WORK.items[0]} />
-            ) : item.n === "02" ? (
-              <FormMock item={WORK.items[1]} />
-            ) : (
-              <CorporateMock item={WORK.items[2]} />
-            );
-
-          // Corporate: full-width, text left and mock right at xl.
-          if (i === 2) {
-            return (
-              <article
-                key={item.n}
-                data-reveal-item
-                className="card card--lift flex flex-col p-6 md:col-span-2 xl:col-span-12 xl:flex-row xl:gap-8"
-              >
-                <div className="flex min-w-0 flex-1 flex-col">
-                  {head}
-                  {claim}
-                  {tags}
-                </div>
-                <div className="mt-6 flex min-w-0 flex-1 flex-col xl:mt-0">{mock}</div>
-              </article>
-            );
-          }
-
-          return (
-            <article
-              key={item.n}
-              data-reveal-item
-              className={`card card--lift flex flex-col p-6 ${i === 0 ? "xl:col-span-7" : "xl:col-span-5"}`}
-            >
-              {head}
-              {claim}
-              {tags}
-              {mock}
-            </article>
-          );
-        })}
+          </article>
+        ))}
       </div>
-      <div className="mt-12" data-reveal>
-        <a href="#pricing" className="link link--blue tap44 gap-2">
-          See pricing
-          <ArrowRight size={16} aria-hidden="true" />
-        </a>
-      </div>
+      <a href="#pricing" className="link link--blue tap44 mt-8 gap-2">
+        See pricing
+        <ArrowRight size={16} aria-hidden="true" />
+      </a>
     </Section>
   );
 }
