@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## React Bits
+
+The React Bits registry is configured in `components.json`. Codex loads the
+shadcn MCP configuration from `.codex/config.toml` when the project is
+trusted. Open Codex from this repository after pulling the configuration.
+
+The homepage uses an adapted GlareHover on the hero artwork. It runs once
+per pointer entry on hover-capable devices and respects reduced motion.
+Use the registry's TypeScript/CSS variants for components in this project.
+
+```bash
+npx shadcn@latest search @react-bits -q GlareHover
+```

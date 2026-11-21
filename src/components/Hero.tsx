@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowDownRight, ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { HERO } from "@/lib/content";
+import GlareHover from "./react-bits/GlareHover";
 import { Btn } from "./ui";
 
 export default function Hero() {
@@ -27,14 +28,16 @@ export default function Hero() {
         </div>
 
         <figure className="hero__art" aria-hidden="true">
-          <Image
-            src="/zyrix-continuum.webp"
-            alt=""
-            fill
-            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 60vw, 780px"
-            fetchPriority="high"
-            className="hero__image"
-          />
+          <GlareHover>
+            <Image
+              src="/zyrix-continuum.webp"
+              alt=""
+              fill
+              sizes="(max-width: 767px) 100vw, (max-width: 1279px) 60vw, 780px"
+              fetchPriority="high"
+              className="hero__image"
+            />
+          </GlareHover>
         </figure>
       </div>
     </section>
