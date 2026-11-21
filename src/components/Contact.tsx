@@ -3,7 +3,6 @@
 import { useRef, useState, type FormEvent } from "react";
 import { CONTACT_SECTION } from "@/lib/content";
 import { Section, SectionHead } from "./ui";
-import WhatsAppFloat from "./WhatsAppFloat";
 
 type Values = {
   name: string;
@@ -99,9 +98,11 @@ export default function Contact() {
       if (res.ok && data?.ok) {
         setErrors({});
         setSubmitted(false);
-        setStatus(form.sent);
         if (data.channel === "whatsapp" && data.whatsappUrl) {
           setWhatsappUrl(data.whatsappUrl);
+          setStatus("Your request is ready to send via WhatsApp.");
+        } else {
+          setStatus(form.sent);
         }
         return;
       }
@@ -122,42 +123,39 @@ export default function Contact() {
   }
 
   return (
-    <Section id="contact" h={2} hm={2} attrs={{ "data-dim-orb": "" }}>
-      <div className="flex flex-1 flex-col justify-between">
+    <Section id="contact">
+      <div className="contact-layout">
         <div>
           <SectionHead
-            eyebrow={CONTACT_SECTION.eyebrow}
             title={CONTACT_SECTION.h2}
             lead={CONTACT_SECTION.meta}
-            scrim
           />
-          <p className="lead muted measure -mt-6 mb-10 md:-mt-8" data-reveal>
+          <p className="lead mb-7" data-reveal>
             {CONTACT_SECTION.body}
           </p>
 
-          <div className="mb-8 w-fit rounded-lg bg-panel p-4" data-reveal>
+          <div className="contact-channels" data-reveal>
             <ul className="flex flex-col gap-4">
-            {CONTACT_SECTION.channels.map((ch) => (
-              <li key={ch.label} className="flex flex-wrap items-baseline gap-3">
-                <span className="label muted">{ch.label}</span>
-                {ch.href ? (
-                  <a
-                    href={ch.href}
-                    {...(ch.href.startsWith("http")
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : {})}
-                    className="link link--blue tap44"
-                  >
-                    {ch.value}
-                  </a>
-                ) : null}
-              </li>
-            ))}
-          </ul>
+              {CONTACT_SECTION.channels.map((ch) => (
+                <li key={ch.label} className="flex flex-wrap items-baseline gap-3">
+                  <span className="label muted">{ch.label}</span>
+                  {ch.href ? (
+                    <a
+                      href={ch.href}
+                      {...(ch.href.startsWith("http")
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                      className="link link--blue tap44"
+                    >
+                      {ch.value}
+                    </a>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-
-        <div>
+        <div className="contact-layout__form">
           <form
             data-ui="free-plan-form"
             data-reveal
@@ -187,29 +185,31 @@ export default function Contact() {
               </div>
             ) : null}
             <div className="grid gap-6 md:grid-cols-2">
-            <div className="field">
-              <label htmlFor="contact-name">{form.nameLabel}</label>
-              <input
-                id="contact-name"
-                ref={nameRef}
-                type="text"
-                autoComplete="name"
-                value={values.name}
-                onChange={(e) => setValue("name", e.target.value)}
-                aria-invalid={Boolean(errors.name)}
-                aria-describedby={errors.name ? "contact-name-error" : undefined}
-              />
-              {errors.name ? (
-                <p id="contact-name-error" className="field__error">
-                  {errors.name}
-                </p>
-              ) : null}
+              <div className="field">
+                <label htmlFor="contact-name">{form.nameLabel}</label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  ref={nameRef}
+                  type="text"
+                  autoComplete="name"
+                  value={values.name}
+                  onChange={(e) => setValue("name", e.target.value)}
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? "contact-name-error" : undefined}
+                />
+                {errors.name ? (
+                  <p id="contact-name-error" className="field__error">
+                    {errors.name}
+                  </p>
+                ) : null}
             </div>
 
             <div className="field">
               <label htmlFor="contact-email">{form.emailLabel}</label>
               <input
                 id="contact-email"
+                name="email"
                 ref={emailRef}
                 type="email"
                 autoComplete="email"
@@ -230,6 +230,7 @@ export default function Contact() {
               <label htmlFor="contact-project">{form.projectLabel}</label>
               <select
                 id="contact-project"
+                name="project"
                 ref={projectRef}
                 value={values.project}
                 onChange={(e) => setValue("project", e.target.value)}
@@ -254,6 +255,7 @@ export default function Contact() {
               <label htmlFor="contact-details">{form.detailsLabel}</label>
               <textarea
                 id="contact-details"
+                name="details"
                 ref={detailsRef}
                 placeholder={form.detailsPlaceholder}
                 value={values.details}
@@ -296,7 +298,6 @@ export default function Contact() {
           <p className="label mt-10" data-reveal>{form.note}</p>
         </div>
       </div>
-      <WhatsAppFloat />
     </Section>
   );
 }

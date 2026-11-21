@@ -112,7 +112,7 @@ function OpsMock({ item }: { item: (typeof SERVICES.items)[2] }) {
       <div className="flex items-baseline justify-between gap-4">
         <p className="label muted">{item.visual.kind}</p>
         <p className="label flex items-center gap-2 text-blue-light">
-          <span className="pulse-dot inline-block h-2 w-2 rounded-full bg-blue" aria-hidden="true" />
+          <span className="inline-block h-2 w-2 rounded-full bg-blue" aria-hidden="true" />
           LIVE
         </p>
       </div>
@@ -262,98 +262,20 @@ export function Services() {
   ];
 
   return (
-    <Section id="services" h={2} hm={3} attrs={{ "data-dim-orb": "" }}>
-      <SectionHead index={SERVICES.index} eyebrow={SERVICES.eyebrow} title={SERVICES.h2} scrim />
-      {/* Asymmetric grid (redesign skill): 5/7/7/5 at xl, the wide cards
-          carry the horizontal mocks; the right column staggers down 48px.
-          Below xl the two-column grid with stacked cards. */}
-      <div
-        className="grid flex-1 grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-12"
-        data-reveal-stagger
-      >
-        {SERVICES.items.map((item, i) => {
-          const head = (
-            <div className="mb-6 flex items-baseline justify-between gap-4">
-              <span className="label muted">{item.n}</span>
-              <span className="label">{item.title}</span>
+    <Section id="services">
+      <SectionHead title={SERVICES.h2} />
+      <div className="grid gap-x-10 gap-y-12 md:grid-cols-2">
+        {SERVICES.items.map((item, index) => (
+          <article className="service-item" key={item.n} data-reveal>
+            <div>
+              <h3 className="heading-5">{item.title}</h3>
+              <p className="display--sentence mt-2"><ClaimText claim={item.claim} /></p>
+              <p className="muted mt-3 max-w-prose">{item.body}</p>
             </div>
-          );
-          const claim = (
-            <h3 className="display--sentence mb-2">
-              <ClaimText claim={item.claim} />
-            </h3>
-          );
-          const body = <p className="muted mb-6 max-w-prose">{item.body}</p>;
-          const tags = (
-            <div className="mt-6 flex flex-wrap gap-2">
-              {item.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="caption-4 rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          );
-
-          // Cards 2 and 3 (Make buying easy / Make work simple): horizontal
-          // on xl — text left, mock right — in the wide 7-col spans.
-          if (i === 1 || i === 2) {
-            return (
-              <article
-                key={item.n}
-                data-reveal-item
-                className={`card card--lift flex flex-col gap-6 p-6 xl:col-span-7 xl:flex-row${i === 1 ? " xl:mt-12" : ""}`}
-              >
-                <div className="flex min-w-0 flex-1 flex-col">
-                  {head}
-                  {claim}
-                  {body}
-                  {tags}
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col">{mocks[i]}</div>
-              </article>
-            );
-          }
-
-          // Card 4 (Be remembered): mock at the bottom, below the text
-          // and tags — a low stack, distinct from the top and side mocks.
-          if (i === 3) {
-            return (
-              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 xl:col-span-5 xl:mt-12">
-                {head}
-                {claim}
-                {body}
-                {tags}
-                <div className="mt-6 flex flex-1 flex-col">{mocks[i]}</div>
-              </article>
-            );
-          }
-
-          // Card 1 (Be trusted): mock above the text.
-          if (i === 0) {
-            return (
-              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 xl:col-span-5">
-                {head}
-                <div className="mb-6 flex flex-col">{mocks[i]}</div>
-                {claim}
-                {body}
-                {tags}
-              </article>
-            );
-          }
-
-          return (
-            <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 xl:col-span-5">
-              {head}
-              {claim}
-              {body}
-              {mocks[i]}
-              {tags}
-            </article>
-          );
-        })}
+            {mocks[index]}
+            <p className="service-item__tags">{item.tags.join(" · ")}</p>
+          </article>
+        ))}
       </div>
       <div className="mt-12" data-reveal>
         <a href="#contact" className="link link--blue tap44 gap-2">

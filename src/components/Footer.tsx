@@ -1,21 +1,14 @@
-import { CONTACT_SECTION, FOOTER } from "@/lib/content";
-import { Btn } from "./ui";
+import { FOOTER } from "@/lib/content";
 
 export default function Footer() {
   return (
     <footer id="footer" className="closing bg-navy text-mist">
       <div className="wrap py-16 md:py-24">
         <div>
-          <div className="flex flex-wrap items-end justify-between gap-8" data-reveal>
-            <p className="heading-2 mt-16">
-              {FOOTER.tagline}
-            </p>
-            <Btn href="#contact">{CONTACT_SECTION.form.submit}</Btn>
-          </div>
+          <p className="heading-4">{FOOTER.tagline}</p>
           <p
-            aria-label="Zyrix"
             data-reveal
-            className="display mt-16 text-[clamp(72px,22vw,320px)]"
+            className="footer-wordmark display"
           >
             {FOOTER.wordmark}
           </p>

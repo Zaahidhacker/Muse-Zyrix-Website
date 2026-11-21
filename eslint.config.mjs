@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Downloaded design tools live beside the application.
+    ".agents/skills/**",
+    ".claude/skills/**",
+    ".cursor/skills/**",
+    "agent/skills/**",
   ]),
 ]);
 

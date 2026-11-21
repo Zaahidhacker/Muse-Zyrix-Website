@@ -1,67 +1,29 @@
-"use client";
-
-import { ArrowRight } from "@phosphor-icons/react";
+import { Check, Minus } from "@phosphor-icons/react/dist/ssr";
 import { DIFFERENCE } from "@/lib/content";
 import { Section } from "./ui";
 
-/**
- * 01 / The Difference — spare and monumental. Giant h2, one line under it,
- * lots of air. The orb passes behind this section (handled elsewhere);
- * this section's background stays transparent. The three removals sit at
- * the foot of the box, so the section fills instead of floating.
- * Mini-CTA (Scroll-Triggered Storytelling): the free plan, at the foot.
- */
-const REMOVALS = ["vague prices", "slow delivery", "unclear ownership"];
+const changes = [
+  ["Vague prices", "Upfront pricing"],
+  ["Slow delivery", "Defined timelines"],
+  ["Unclear ownership", "Your site, yours to keep"],
+] as const;
 
 export function Difference() {
-  // "NOT ANOTHER" / "PRETTY PAGE." — the h2 is set on two lines at the
-  // standard h2 size instead of one line at 92px.
-  const [headFirst, headRest] = DIFFERENCE.h2.split("ANOTHER ");
   return (
-    <Section
-      id="difference"
-      h={1}
-      attrs={{ "data-statement": "", "data-dim-orb": "" }}
-    >
-      <div className="grid flex-1 content-between pb-3">
-        <div className="scrim">
-          <p className="eyebrow mb-4" data-reveal>
-            {DIFFERENCE.index} / {DIFFERENCE.eyebrow}
-          </p>
-          <h2 className="display" data-reveal-words>
-            {headFirst}ANOTHER
-            <br />
-            {headRest.trim()}
-          </h2>
-          <p className="lead muted mt-6" data-reveal>
-            {DIFFERENCE.body}
-          </p>
-        </div>
+    <Section id="difference">
+      <div className="difference-layout">
         <div>
-          <div
-            className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3"
-            data-reveal-stagger
-          >
-            {REMOVALS.map((phrase, i) => (
-              <div
-                key={phrase}
-                data-reveal-item
-                className="flex min-h-24 flex-col justify-between"
-              >
-                <p className="heading-3 muted tnum">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
-                <p className="display--sentence">{phrase}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8" data-reveal>
-            <a href="#contact" className="link link--blue tap44 gap-2">
-              Get your free plan
-              <ArrowRight size={16} aria-hidden="true" />
-            </a>
-          </div>
+          <h2 className="display" data-reveal-words>{DIFFERENCE.h2}</h2>
+          <p className="lead mt-6" data-reveal>{DIFFERENCE.body}</p>
         </div>
+        <ul className="difference-list">
+          {changes.map(([problem, outcome]) => (
+            <li key={problem} data-reveal>
+              <s><Minus size={18} aria-hidden="true" />{problem}</s>
+              <span><Check size={18} aria-hidden="true" />{outcome}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </Section>
   );
