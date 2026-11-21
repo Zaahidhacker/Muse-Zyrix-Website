@@ -116,11 +116,11 @@ function OpsMock({ item }: { item: (typeof SERVICES.items)[2] }) {
           LIVE
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 border-y border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)]">
         {stats.map((s) => (
           <div
             key={s.label}
-            className="rounded-md border border-[color-mix(in_srgb,var(--p-ink)_10%,transparent)] px-3 py-3"
+            className="min-w-0 py-3"
           >
             <p className="tnum text-xl font-semibold md:text-2xl">{s.value}</p>
             <p className="label muted mt-1">
