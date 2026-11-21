@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ArrowRight } from "@phosphor-icons/react";
 import { CONTACT, PRICING, WORK, formatLkr } from "@/lib/content";
 import { Section, SectionHead } from "./ui";
 
@@ -28,10 +29,10 @@ function RestaurantMock({ item }: { item: (typeof WORK.items)[0] }) {
     <div className="panel flex flex-1 flex-col gap-4" data-ui="restaurant-ordering">
       <div className="flex items-baseline justify-between gap-4">
         <p className="label muted">{m.kitchen}</p>
-        <p className="label text-gold">{m.ordersLive}</p>
+        <p className="label text-blue-light">{m.ordersLive}</p>
       </div>
       <div>
-        <p className="display text-3xl">{m.name}</p>
+        <p className="heading-4">{m.name}</p>
         <p className="label muted mt-1">{m.sub}</p>
       </div>
       <div>
@@ -43,14 +44,14 @@ function RestaurantMock({ item }: { item: (typeof WORK.items)[0] }) {
             <span className="text-sm">
               {dish.name}
               {(added[dish.name] ?? 0) > 0 && (
-                <span className="ml-2 font-mono text-xs text-gold">×{added[dish.name]}</span>
+                <span className="ml-2 tnum text-xs text-blue-light">×{added[dish.name]}</span>
               )}
             </span>
             <span className="flex items-center gap-3">
-              <span className="font-mono text-sm">LKR {formatLkr(dish.price)}</span>
+              <span className="tnum text-sm">LKR {formatLkr(dish.price)}</span>
               <button
                 type="button"
-                className="flex min-h-11 items-center rounded-md border border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)] px-4 py-1.5 font-mono text-xs tracking-[0.08em] transition-colors hover:border-gold hover:text-gold"
+                className="flex min-h-11 items-center rounded-md border border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)] px-4 py-2 tnum text-xs tracking-[0.08em] transition-colors duration-300 hover:border-blue-light hover:text-blue-light"
                 onClick={() => setAdded((prev) => ({ ...prev, [dish.name]: (prev[dish.name] ?? 0) + 1 }))}
               >
                 ADD
@@ -60,9 +61,9 @@ function RestaurantMock({ item }: { item: (typeof WORK.items)[0] }) {
         ))}
       </div>
       <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-t border-[color-mix(in_srgb,var(--p-ink)_12%,transparent)] pt-4">
-        <span className="font-mono text-sm text-gold">#{orderNo}</span>
+        <span className="tnum text-sm text-blue-light">#{orderNo}</span>
         {counts.map((c) => (
-          <span key={c.label} className="label muted">
+          <span key={c.label} className="label muted tnum">
             {c.label} {c.value}
           </span>
         ))}
@@ -70,7 +71,7 @@ function RestaurantMock({ item }: { item: (typeof WORK.items)[0] }) {
       {totalItems > 0 && (
         <p className="flex items-baseline justify-between text-sm">
           <span className="label muted">Total</span>
-          <span className="font-display text-xl font-semibold">LKR {formatLkr(total)}</span>
+          <span className="text-xl font-semibold">LKR {formatLkr(total)}</span>
         </p>
       )}
       <a
@@ -102,7 +103,7 @@ function FormMock({ item }: { item: (typeof WORK.items)[1] }) {
         <p className="label">{m.brand}</p>
         <p className="flex gap-4">
           {nav.map((n) => (
-            <span key={n} className="label muted" style={{ fontSize: "11px" }}>
+            <span key={n} className="label muted">
               {n}
             </span>
           ))}
@@ -110,9 +111,9 @@ function FormMock({ item }: { item: (typeof WORK.items)[1] }) {
       </div>
       <p className="label muted">{m.objectNo}</p>
       <p className="label">{m.category}</p>
-      <p className="display text-3xl">{m.name}</p>
-      <p className="serif-accent text-2xl">{m.line}</p>
-      <p className="font-display text-xl font-semibold">LKR {formatLkr(m.price)}</p>
+      <p className="heading-4">{m.name}</p>
+      <p className="text-2xl font-medium text-blue-light">{m.line}</p>
+      <p className="tnum text-xl font-semibold">LKR {formatLkr(m.price)}</p>
       <button
         type="button"
         className="btn btn--primary mt-auto w-full"
@@ -120,9 +121,14 @@ function FormMock({ item }: { item: (typeof WORK.items)[1] }) {
       >
         {m.addToCart}
       </button>
+      {/* Polite live region (ux-guidelines.csv #118): cart changes
+          announce a contextual status, without moving focus. */}
+      <p className="visually-hidden" role="status" aria-atomic="true">
+        {cart} item{cart === 1 ? "" : "s"} in cart, LKR {formatLkr(total)}
+      </p>
       <p className="flex items-baseline justify-between text-sm">
         <span className="label muted">Cart total</span>
-        <span className="font-display text-lg font-semibold">LKR {formatLkr(total)}</span>
+        <span className="tnum text-lg font-semibold">LKR {formatLkr(total)}</span>
       </p>
     </div>
   );
@@ -134,9 +140,9 @@ function CorporateMock({ item }: { item: (typeof WORK.items)[2] }) {
   const m = item.mock;
   const [open, setOpen] = useState(false);
   return (
-    <div className="panel flex flex-1 flex-col gap-5" data-ui="corporate-preview">
+    <div className="panel flex flex-1 flex-col gap-6" data-ui="corporate-preview">
       <p className="label muted">{m.label}</p>
-      <p className="display text-3xl">{m.line}</p>
+      <p className="heading-4">{m.line}</p>
       <button
         type="button"
         aria-expanded={open}
@@ -146,9 +152,9 @@ function CorporateMock({ item }: { item: (typeof WORK.items)[2] }) {
         {m.cta}
       </button>
       {open && (
-        <div className="rounded-md border border-[color-mix(in_srgb,var(--p-ink)_12%,transparent)] p-5">
-          <p className="display text-2xl">{m.line}</p>
-          <a className="link link--gold mt-3 inline-block font-medium" href="#contact">
+        <div className="rounded-md border border-[color-mix(in_srgb,var(--p-ink)_12%,transparent)] p-6">
+          <p className="heading-5">{m.line}</p>
+          <a className="link link--blue mt-3 inline-block font-medium" href="#contact">
             {PRICING.footerCta}
           </a>
         </div>
@@ -159,7 +165,8 @@ function CorporateMock({ item }: { item: (typeof WORK.items)[2] }) {
 
 /* ---------- Section ---------- */
 
-/** Claim in the display face, last word in italic serif. */
+/** Claim in the display face, last word in blue (emphasis via colour,
+    not italics — B1). */
 function ClaimText({ claim }: { claim: string }) {
   const words = claim.split(" ");
   const last = words[words.length - 1];
@@ -167,7 +174,7 @@ function ClaimText({ claim }: { claim: string }) {
   return (
     <>
       {rest ? `${rest} ` : ""}
-      <em className="serif-accent">{last}</em>
+      <span className="text-blue-light">{last}</span>
     </>
   );
 }
@@ -176,31 +183,80 @@ export function Work() {
   return (
     <Section id="work" h={2} hm={3} attrs={{ "data-dim-orb": "" }}>
       <SectionHead eyebrow={WORK.eyebrow} title={WORK.h2} lead={WORK.meta} scrim />
-      <div className="grid flex-1 grid-cols-1 gap-5 lg:grid-cols-3" data-reveal-stagger>
-        {WORK.items.map((item) => (
-          <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
-            <div className="mb-5 flex items-baseline justify-between gap-4">
+      {/* Asymmetric grid (redesign skill): Koti's 7 / FORM 5, then the
+          corporate build full-width and horizontal at xl. Below xl the
+          two-column grid; corporate spans both columns at md. */}
+      <div className="grid flex-1 grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-12" data-reveal-stagger>
+        {WORK.items.map((item, i) => {
+          const head = (
+            <div className="mb-6 flex items-baseline justify-between gap-4">
               <span className="label muted">{item.n}</span>
               <span className="label">{item.title}</span>
             </div>
+          );
+          const claim = (
             <h3 className="display--sentence mb-2">
               <ClaimText claim={item.claim} />
             </h3>
+          );
+          const tags = (
             <div className="mb-6 flex flex-wrap gap-2">
               {item.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1 font-mono text-[11px] tracking-[0.12em]"
+                  className="caption-4 rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            {item.n === "01" && <RestaurantMock item={WORK.items[0]} />}
-            {item.n === "02" && <FormMock item={WORK.items[1]} />}
-            {item.n === "03" && <CorporateMock item={WORK.items[2]} />}
-          </article>
-        ))}
+          );
+          const mock =
+            item.n === "01" ? (
+              <RestaurantMock item={WORK.items[0]} />
+            ) : item.n === "02" ? (
+              <FormMock item={WORK.items[1]} />
+            ) : (
+              <CorporateMock item={WORK.items[2]} />
+            );
+
+          // Corporate: full-width, text left and mock right at xl.
+          if (i === 2) {
+            return (
+              <article
+                key={item.n}
+                data-reveal-item
+                className="card card--lift flex flex-col p-6 md:col-span-2 xl:col-span-12 xl:flex-row xl:gap-8"
+              >
+                <div className="flex min-w-0 flex-1 flex-col">
+                  {head}
+                  {claim}
+                  {tags}
+                </div>
+                <div className="mt-6 flex min-w-0 flex-1 flex-col xl:mt-0">{mock}</div>
+              </article>
+            );
+          }
+
+          return (
+            <article
+              key={item.n}
+              data-reveal-item
+              className={`card card--lift flex flex-col p-6 ${i === 0 ? "xl:col-span-7" : "xl:col-span-5"}`}
+            >
+              {head}
+              {claim}
+              {tags}
+              {mock}
+            </article>
+          );
+        })}
+      </div>
+      <div className="mt-12" data-reveal>
+        <a href="#pricing" className="link link--blue tap44 gap-2">
+          See pricing
+          <ArrowRight size={16} aria-hidden="true" />
+        </a>
       </div>
     </Section>
   );

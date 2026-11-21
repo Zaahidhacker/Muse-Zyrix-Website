@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  * 02 / The Result — the 11-word pitch as a word-highlight moment.
  * Words start at ~45% ink opacity and turn to full ink word by word as
  * the section scrolls through the middle of the viewport; the final word
- * ("action.") is gold. Scrolling back reverses it (scrub). Under
+ * ("action.") is blue-light. Scrolling back reverses it (scrub). Under
  * prefers-reduced-motion every word is full ink with no animation.
  */
 export function Result() {
@@ -60,18 +60,17 @@ export function Result() {
             title={RESULT.h2}
             lead={RESULT.body}
           />
-          <p className="label muted mb-8 font-mono" data-reveal>{RESULT.meta}</p>
+          <p className="label muted mb-8 tnum" data-reveal>{RESULT.meta}</p>
         </div>
         <p
-          className="display"
-          style={{ fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.15 }}
+          className="text-4xl font-semibold leading-[1.15] tracking-[-0.03em] md:text-5xl"
           aria-label={RESULT.pitch}
         >
           {words.map((word, i) => (
             <span
               key={`${word}-${i}`}
               aria-hidden="true"
-              className={`pitch-word inline-block ${i === words.length - 1 ? "text-gold" : ""}`}
+              className={`pitch-word inline-block ${i === words.length - 1 ? "text-blue-light" : ""}`}
               style={{ opacity: 0.45, marginRight: "0.28em" }}
             >
               {word}

@@ -10,7 +10,7 @@ function DiscoverMock({ step }: { step: (typeof JOURNEY.steps)[0] }) {
   const v = step.visual;
   const labels = v.labels.split(" + ");
   return (
-    <div className="panel flex flex-1 flex-col gap-5" data-ui="journey-mock">
+    <div className="panel flex flex-1 flex-col gap-6" data-ui="journey-mock">
       <p className="rounded-md border border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)] px-4 py-3 text-sm">
         {v.search}
       </p>
@@ -21,19 +21,19 @@ function DiscoverMock({ step }: { step: (typeof JOURNEY.steps)[0] }) {
             className="flex items-center justify-between border-t border-[color-mix(in_srgb,var(--p-ink)_12%,transparent)] py-3 text-sm"
           >
             <span>{v.line}</span>
-            <span className="label muted" style={{ fontSize: "11px" }}>
+            <span className="label muted">
               {label}
             </span>
           </p>
         ))}
       </div>
-      <p className="display text-2xl">{v.line}</p>
+      <p className="heading-5">{v.line}</p>
       <p className="muted">{v.sub}</p>
       <div className="mt-auto flex flex-wrap gap-2">
         {v.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1 font-mono text-[11px] tracking-[0.12em]"
+            className="caption-4 rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1"
           >
             {tag}
           </span>
@@ -48,12 +48,12 @@ function TrustMock({ step }: { step: (typeof JOURNEY.steps)[1] }) {
   return (
     <div className="panel flex flex-1 flex-col gap-4" data-ui="journey-mock">
       <p className="label muted">{v.label}</p>
-      <p className="figure text-gold">
+      <p className="figure text-blue-light">
         {v.score}
       </p>
       <p className="flex flex-wrap gap-x-5 gap-y-1">
         {v.words.map((word) => (
-          <span key={word} className="display text-2xl">
+          <span key={word} className="heading-5">
             {word}
           </span>
         ))}
@@ -87,7 +87,7 @@ function MessageMock({ step }: { step: (typeof JOURNEY.steps)[2] }) {
     <div className="panel flex flex-1 flex-col gap-4" data-ui="journey-mock">
       <div className="flex items-baseline justify-between gap-4">
         <p className="font-medium">{v.business}</p>
-        <p className="label text-gold" style={{ fontSize: "11px" }}>
+        <p className="label text-blue-light">
           {v.response}
         </p>
       </div>
@@ -95,10 +95,10 @@ function MessageMock({ step }: { step: (typeof JOURNEY.steps)[2] }) {
         {messages.map((m, i) => (
           <p
             key={i}
-            className={`max-w-[85%] rounded-lg px-4 py-2.5 text-sm leading-relaxed ${
+            className={`max-w-[85%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
               m.from === "in"
                 ? "self-start bg-[color-mix(in_srgb,var(--p-ink)_10%,transparent)]"
-                : "self-end bg-gold text-coal"
+                : "self-end bg-blue text-navy"
             }`}
           >
             {m.text}
@@ -118,7 +118,7 @@ function MessageMock({ step }: { step: (typeof JOURNEY.steps)[2] }) {
           onChange={(e) => setDraft(e.target.value)}
           placeholder={v.placeholder}
           aria-label={v.placeholder}
-          className="h-12 min-w-0 flex-1 rounded-md border border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)] bg-transparent px-3 text-sm outline-none placeholder:text-muted focus:border-gold"
+          className="h-12 min-w-0 flex-1 rounded-md border border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)] bg-transparent px-3 text-sm outline-none placeholder:text-muted focus:border-blue-light"
         />
         <button type="submit" className="btn btn--primary shrink-0">
           Send
@@ -132,12 +132,12 @@ function PayMock({ step }: { step: (typeof JOURNEY.steps)[3] }) {
   const v = step.visual;
   const [selected, setSelected] = useState(0);
   return (
-    <div className="panel flex flex-1 flex-col gap-5" data-ui="journey-mock">
+    <div className="panel flex flex-1 flex-col gap-6" data-ui="journey-mock">
       <div className="flex items-baseline justify-between gap-4">
         <p className="label muted">{v.label}</p>
-        <p className="display text-2xl text-gold">{v.currency}</p>
+        <p className="heading-5 text-blue-light">{v.currency}</p>
       </div>
-      <p className="display text-2xl">{v.line}</p>
+      <p className="heading-5">{v.line}</p>
       <div className="grid grid-cols-2 gap-3" role="group" aria-label={v.line}>
         {v.methods.map((method, i) => (
           <button
@@ -145,9 +145,9 @@ function PayMock({ step }: { step: (typeof JOURNEY.steps)[3] }) {
             type="button"
             aria-pressed={selected === i}
             onClick={() => setSelected(i)}
-            className={`flex h-14 items-center justify-center rounded-md border px-3 font-mono text-sm tracking-[0.08em] transition-colors ${
+            className={`flex h-14 items-center justify-center rounded-md border px-3 tnum text-sm tracking-[0.08em] transition-colors duration-300 ${
               selected === i
-                ? "border-gold bg-gold text-coal"
+                ? "border-blue-light bg-blue text-navy"
                 : "border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)]"
             }`}
           >
@@ -157,7 +157,7 @@ function PayMock({ step }: { step: (typeof JOURNEY.steps)[3] }) {
       </div>
       <p className="mt-auto text-sm">
         <span className="label muted">Current method — </span>
-        <span className="font-medium text-gold">{v.methods[selected]}</span>
+        <span className="font-medium text-blue-light">{v.methods[selected]}</span>
       </p>
     </div>
   );
@@ -192,16 +192,16 @@ export function Journey() {
               data-reveal-item
               aria-pressed={active === i}
               onClick={() => selectStep(i)}
-              className={`rounded-md border p-5 text-left transition-colors ${
+              className={`rounded-md border p-6 text-left transition-colors duration-300 ${
                 active === i
-                  ? "border-gold bg-panel"
+                  ? "border-blue-light bg-panel"
                   : "border-[color-mix(in_srgb,var(--p-ink)_12%,transparent)]"
               }`}
             >
               <span className="flex items-baseline gap-4">
                 <span className="label muted">{s.n}</span>
-                <span className="display text-xl">{s.title}</span>
-                <span className="serif-accent text-xl">{s.claim}</span>
+                <span className="heading-6">{s.title}</span>
+                <span className="text-xl font-medium text-blue-light">{s.claim}</span>
               </span>
               <span className="muted mt-2 block text-sm">{s.body}</span>
             </button>
@@ -215,7 +215,8 @@ export function Journey() {
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(8px)",
-            transition: "opacity 300ms ease, transform 300ms ease",
+            transition:
+              "opacity 300ms ease, transform 500ms cubic-bezier(0.22,1,0.36,1)",
           }}
         >
           {/* 40px under the step header: at 390px the mock panel sat
@@ -223,8 +224,8 @@ export function Journey() {
               grid's own 40px gap already separates the stacked columns. */}
           <div className="mb-10 flex items-baseline gap-4">
             <span className="label muted">{step.n}</span>
-            <h3 className="display text-2xl">{step.title}</h3>
-            <span className="serif-accent text-2xl text-gold">{step.claim}</span>
+            <h3 className="heading-5">{step.title}</h3>
+            <span className="heading-5 text-blue-light">{step.claim}</span>
           </div>
           {active === 0 && <DiscoverMock step={JOURNEY.steps[0]} />}
           {active === 1 && <TrustMock step={JOURNEY.steps[1]} />}

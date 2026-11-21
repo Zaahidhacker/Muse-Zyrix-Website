@@ -1,50 +1,33 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { CheckCircle, Lightning, MapPin, ShieldCheck } from "@phosphor-icons/react";
 import { RISK } from "@/lib/content";
 import { Section } from "./ui";
 
+/** Risk icons are Phosphor (regular weight, 40px feature size). Navy on
+    the light cards — blue on light grounds is only ~2.5:1. */
 function CardIcon({ index }: { index: number }): ReactNode {
   const props = {
+    size: 40,
+    weight: "regular" as const,
     "aria-hidden": true,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.5,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    className: "h-12 w-12 text-gold",
+    className: "text-navy",
   };
   switch (index) {
     case 0: // check-circle — Fixed before we start
-      return (
-        <svg {...props}>
-          <circle cx="12" cy="12" r="10" />
-          <path d="m9 12 2 2 4-4" />
-        </svg>
-      );
+      return <CheckCircle {...props} />;
     case 1: // shield — You own the result
-      return (
-        <svg {...props}>
-          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-        </svg>
-      );
+      return <ShieldCheck {...props} />;
     case 2: // bolt — Built to perform
-      return (
-        <svg {...props}>
-          <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 1 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 1 11 14z" />
-        </svg>
-      );
+      return <Lightning {...props} />;
     default: // map-pin — Local where it matters
-      return (
-        <svg {...props}>
-          <path d="M20 10c0 4.993-5.539 10.193-7.612 11.665a1 1 0 0 1-.776 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0Z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-      );
+      return <MapPin {...props} />;
   }
 }
 
 export default function Risk() {
-  // "website." is the live site's own italic-serif emphasis word.
+  // "website." is the live site's own emphasis word — blue, not italics.
   const [headStart] = RISK.h2.split("website.");
   return (
     <Section id="risk" h={1} tone="dark" attrs={{ "data-statement": "" }}>
@@ -53,9 +36,9 @@ export default function Risk() {
       <div className="mb-12 md:mb-16">
         <h2 className="display" data-reveal-words>
           {headStart}
-          <em className="serif-accent">website.</em>
+          <span className="text-blue-light">website.</span>
         </h2>
-        <p className="lead muted mt-5" data-reveal>
+        <p className="lead muted mt-6" data-reveal>
           {RISK.body}
         </p>
       </div>
@@ -64,7 +47,7 @@ export default function Risk() {
           <article
             key={card.title}
             data-reveal-item
-            className="rounded-[var(--radius-md)] bg-cream p-8 text-coal"
+            className="rounded-md bg-mist p-8 text-navy"
           >
             <CardIcon index={i} />
             <h3 className="display--sentence mt-4">{card.title}</h3>

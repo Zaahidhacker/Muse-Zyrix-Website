@@ -3,11 +3,11 @@ import { Btn } from "./ui";
 
 export default function Footer() {
   return (
-    <footer id="footer" className="closing bg-coal text-cream">
+    <footer id="footer" className="closing bg-navy text-mist">
       <div className="wrap py-16 md:py-24">
         <div>
           <div className="flex flex-wrap items-end justify-between gap-8" data-reveal>
-            <p className="display text-[clamp(36px,5vw,72px)]">
+            <p className="heading-2 mt-16">
               {FOOTER.tagline}
             </p>
             <Btn href="#contact">{CONTACT_SECTION.form.submit}</Btn>
@@ -15,7 +15,7 @@ export default function Footer() {
           <p
             aria-label="Zyrix"
             data-reveal
-            className="display mt-16 leading-[0.85] text-[clamp(72px,22vw,320px)]"
+            className="display mt-16 text-[clamp(72px,22vw,320px)]"
           >
             {FOOTER.wordmark}
           </p>
@@ -28,6 +28,14 @@ export default function Footer() {
                 {l.label}
               </a>
             ))}
+          </nav>
+          <nav aria-label="Legal" className="flex flex-wrap gap-6">
+            <a href="/privacy" className="link tap44 text-sm">
+              Privacy
+            </a>
+            <a href="/terms" className="link tap44 text-sm">
+              Terms
+            </a>
           </nav>
           <p className="muted text-sm">{FOOTER.legal}</p>
         </div>

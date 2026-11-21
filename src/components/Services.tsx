@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { ArrowRight } from "@phosphor-icons/react";
 import { SERVICES, formatLkr } from "@/lib/content";
 import { Section, SectionHead } from "./ui";
 
@@ -13,11 +14,11 @@ function BrandMock({ item }: { item: (typeof SERVICES.items)[0] }) {
   return (
     <div className="panel flex flex-1 flex-col gap-4" data-ui="brand-lockup">
       <p className="label muted">{item.visual.kind}</p>
-      <span className="inline-flex h-16 w-16 items-center justify-center rounded-full border-2 border-gold font-display text-2xl font-bold text-gold">
+      <span className="inline-flex h-16 w-16 items-center justify-center rounded-full border-2 border-blue-light text-2xl font-bold text-blue-light">
         {item.visual.lines[0]}
       </span>
       <p className="label">{item.visual.lines[1]}</p>
-      <p className="display" style={{ fontSize: "clamp(24px, 2vw, 30px)" }}>
+      <p className="heading-5">
         {lockups[i]}
       </p>
       <button
@@ -42,26 +43,31 @@ function ShopMock({ item }: { item: (typeof SERVICES.items)[1] }) {
     <div className="panel flex flex-1 flex-col gap-4" data-ui="mini-cart">
       <div className="flex items-baseline justify-between gap-4">
         <p className="label muted">{item.visual.kind}</p>
-        <p className="label text-gold">CART ({qty})</p>
+        <p className="label text-blue-light">CART ({qty})</p>
       </div>
       <p className="text-lg font-medium">Sculpted light</p>
-      <p className="muted font-mono text-sm">LKR {formatLkr(SHOP_PRICE)}</p>
+      <p className="muted tnum text-sm">LKR {formatLkr(SHOP_PRICE)}</p>
+      {/* Polite live region (ux-guidelines.csv #118): quantity changes
+          announce a contextual status, without moving focus. */}
+      <p className="visually-hidden" role="status" aria-atomic="true">
+        {qty} item{qty === 1 ? "" : "s"} in cart, LKR {formatLkr(total)}
+      </p>
       <div className="flex items-center gap-4">
         <span className="label muted">QTY</span>
         <div className="flex items-center gap-1 rounded-md border border-[color-mix(in_srgb,var(--p-ink)_25%,transparent)]">
           <button
             type="button"
             aria-label="Decrease quantity"
-            className="flex h-11 w-10 items-center justify-center text-lg"
+            className="flex h-11 w-11 items-center justify-center text-lg"
             onClick={() => setQty((q) => Math.max(0, q - 1))}
           >
             −
           </button>
-          <span className="w-8 text-center font-mono">{String(qty).padStart(2, "0")}</span>
+          <span className="w-8 text-center tnum">{String(qty).padStart(2, "0")}</span>
           <button
             type="button"
             aria-label="Increase quantity"
-            className="flex h-11 w-10 items-center justify-center text-lg"
+            className="flex h-11 w-11 items-center justify-center text-lg"
             onClick={() => setQty((q) => q + 1)}
           >
             +
@@ -70,7 +76,7 @@ function ShopMock({ item }: { item: (typeof SERVICES.items)[1] }) {
       </div>
       <p className="flex items-baseline justify-between border-t border-[color-mix(in_srgb,var(--p-ink)_12%,transparent)] pt-4">
         <span className="label muted">Total</span>
-        <span className="font-display text-xl font-semibold">LKR {formatLkr(total)}</span>
+        <span className="text-xl font-semibold">LKR {formatLkr(total)}</span>
       </p>
       <button type="button" className="btn btn--primary mt-auto w-full">
         {qty > 0 ? `CHECKOUT → LKR ${formatLkr(total)}` : "CHECKOUT →"}
@@ -105,8 +111,8 @@ function OpsMock({ item }: { item: (typeof SERVICES.items)[2] }) {
     <div className="panel flex flex-1 flex-col gap-4" data-ui="ops-dashboard">
       <div className="flex items-baseline justify-between gap-4">
         <p className="label muted">{item.visual.kind}</p>
-        <p className="label flex items-center gap-2 text-gold">
-          <span className="pulse-dot inline-block h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
+        <p className="label flex items-center gap-2 text-blue-light">
+          <span className="pulse-dot inline-block h-2 w-2 rounded-full bg-blue" aria-hidden="true" />
           LIVE
         </p>
       </div>
@@ -116,8 +122,8 @@ function OpsMock({ item }: { item: (typeof SERVICES.items)[2] }) {
             key={s.label}
             className="rounded-md border border-[color-mix(in_srgb,var(--p-ink)_10%,transparent)] px-3 py-3"
           >
-            <p className="font-display text-xl font-semibold md:text-2xl">{s.value}</p>
-            <p className="label muted mt-1" style={{ fontSize: "11px" }}>
+            <p className="tnum text-xl font-semibold md:text-2xl">{s.value}</p>
+            <p className="label muted mt-1">
               {s.label}
             </p>
           </div>
@@ -131,7 +137,7 @@ function OpsMock({ item }: { item: (typeof SERVICES.items)[2] }) {
             className="flex items-baseline justify-between border-t border-[color-mix(in_srgb,var(--p-ink)_12%,transparent)] py-2 text-sm"
           >
             <span>{s.label}</span>
-            <span className="label text-gold" style={{ fontSize: "11px" }}>
+            <span className="label text-blue-light">
               STATUS · LIVE
             </span>
           </p>
@@ -154,7 +160,7 @@ function MotionMock({ item }: { item: (typeof SERVICES.items)[3] }) {
 
   useEffect(() => {
     if (discRef.current) {
-      xToRef.current = gsap.quickTo(discRef.current, "x", { duration: 0.4, ease: "power3" });
+      xToRef.current = gsap.quickTo(discRef.current, "x", { duration: 0.4, ease: "expo.out" });
     }
     return () => {
       tweenRef.current?.kill();
@@ -213,12 +219,17 @@ function MotionMock({ item }: { item: (typeof SERVICES.items)[3] }) {
         />
         <div
           ref={discRef}
-          className="absolute top-1/2 -mt-3.5 h-7 w-7 rounded-full bg-gold"
+          className="absolute top-1/2 -mt-3.5 h-7 w-7 rounded-full bg-blue"
           style={{ left: 0 }}
           aria-hidden="true"
         />
       </div>
-      <button type="button" className="btn btn--secondary mt-auto self-start" onClick={togglePlay}>
+      <button
+        type="button"
+        className="btn btn--secondary mt-auto self-start"
+        onClick={togglePlay}
+        aria-pressed={playing}
+      >
         {playing ? "Stop" : "Play"}
       </button>
     </div>
@@ -227,7 +238,8 @@ function MotionMock({ item }: { item: (typeof SERVICES.items)[3] }) {
 
 /* ---------- Section ---------- */
 
-/** Claim in the display face, last word in italic serif. */
+/** Claim in the display face, last word in blue (emphasis via colour,
+    not italics — B1). */
 function ClaimText({ claim }: { claim: string }) {
   const words = claim.split(" ");
   const last = words[words.length - 1];
@@ -235,7 +247,7 @@ function ClaimText({ claim }: { claim: string }) {
   return (
     <>
       {rest ? `${rest} ` : ""}
-      <em className="serif-accent">{last}</em>
+      <span className="text-blue-light">{last}</span>
     </>
   );
 }
@@ -252,13 +264,16 @@ export function Services() {
   return (
     <Section id="services" h={2} hm={3} attrs={{ "data-dim-orb": "" }}>
       <SectionHead index={SERVICES.index} eyebrow={SERVICES.eyebrow} title={SERVICES.h2} scrim />
+      {/* Asymmetric grid (redesign skill): 5/7/7/5 at xl, the wide cards
+          carry the horizontal mocks; the right column staggers down 48px.
+          Below xl the two-column grid with stacked cards. */}
       <div
-        className="grid flex-1 grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2"
+        className="grid flex-1 grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-12"
         data-reveal-stagger
       >
         {SERVICES.items.map((item, i) => {
           const head = (
-            <div className="mb-5 flex items-baseline justify-between gap-4">
+            <div className="mb-6 flex items-baseline justify-between gap-4">
               <span className="label muted">{item.n}</span>
               <span className="label">{item.title}</span>
             </div>
@@ -274,7 +289,7 @@ export function Services() {
               {item.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1 font-mono text-[11px] tracking-[0.12em]"
+                  className="caption-4 rounded-full border border-[color-mix(in_srgb,var(--p-ink)_20%,transparent)] px-3 py-1"
                 >
                   {tag}
                 </span>
@@ -283,13 +298,13 @@ export function Services() {
           );
 
           // Cards 2 and 3 (Make buying easy / Make work simple): horizontal
-          // on lg+ — text left, mock right.
+          // on xl — text left, mock right — in the wide 7-col spans.
           if (i === 1 || i === 2) {
             return (
               <article
                 key={item.n}
                 data-reveal-item
-                className="card card--lift flex flex-col gap-6 p-6 md:p-7 lg:flex-row"
+                className={`card card--lift flex flex-col gap-6 p-6 xl:col-span-7 xl:flex-row${i === 1 ? " xl:mt-12" : ""}`}
               >
                 <div className="flex min-w-0 flex-1 flex-col">
                   {head}
@@ -306,7 +321,7 @@ export function Services() {
           // and tags — a low stack, distinct from the top and side mocks.
           if (i === 3) {
             return (
-              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
+              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 xl:col-span-5 xl:mt-12">
                 {head}
                 {claim}
                 {body}
@@ -319,7 +334,7 @@ export function Services() {
           // Card 1 (Be trusted): mock above the text.
           if (i === 0) {
             return (
-              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
+              <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 xl:col-span-5">
                 {head}
                 <div className="mb-6 flex flex-col">{mocks[i]}</div>
                 {claim}
@@ -330,7 +345,7 @@ export function Services() {
           }
 
           return (
-            <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 md:p-7">
+            <article key={item.n} data-reveal-item className="card card--lift flex flex-col p-6 xl:col-span-5">
               {head}
               {claim}
               {body}
@@ -339,6 +354,12 @@ export function Services() {
             </article>
           );
         })}
+      </div>
+      <div className="mt-12" data-reveal>
+        <a href="#contact" className="link link--blue tap44 gap-2">
+          Get your free plan
+          <ArrowRight size={16} aria-hidden="true" />
+        </a>
       </div>
     </Section>
   );

@@ -3,10 +3,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, MeshDistortMaterial } from "@react-three/drei";
+import { MeshDistortMaterial } from "@react-three/drei";
 import { scrollState } from "@/lib/scroll-state";
 
-const GOLD = "#F0A500";
+const BLUE = "#82BODB";
+const BLUE_LIGHT = "#A9D1E4";
+const YELLOW_GLINT = "#F7EB4F";
+/**
+ * Render albedo for the torus body. The brand blue #82BODB is too pale
+ * and desaturated to survive ACES tone mapping + bright lighting as a
+ * PBR albedo — through every metalness/roughness/light iteration it
+ * washed to grey-white (the gold orb survived only because gold is
+ * extremely saturated). A deeper, saturated steel blue renders on
+ * screen close to dusty blue #82BODB after lighting and tone mapping;
+ * the pale brand blue is kept for the dust, the orbit ring and all
+ * 2D UI, where it renders exactly.
+ */
+const TORUS_ALBEDO = "#2f7fb8";
 
 type Vec3 = [number, number, number];
 
@@ -90,7 +103,7 @@ function OrbScene({ reducedMotion }: { reducedMotion: boolean }) {
     rotZ: HERO_WAYPOINT.rotZ,
   });
 
-  // Sparse field of small gold dust points around the torus.
+  // Sparse field of small blue dust points around the torus.
   const dustPositions = useMemo(() => {
     const count = 200;
     const rand = mulberry32(20261120);
@@ -168,7 +181,7 @@ function OrbScene({ reducedMotion }: { reducedMotion: boolean }) {
 
   return (
     <>
-      <ambientLight intensity={0.25} />
+      <ambientLight intensity={0.4} />
       <group
         ref={outerRef}
         position={HERO_WAYPOINT.pos}
@@ -177,10 +190,15 @@ function OrbScene({ reducedMotion }: { reducedMotion: boolean }) {
         <group ref={innerRef}>
           <mesh>
             <torusGeometry args={[1.05, 0.38, 64, 128]} />
+            {/* MeshDistortMaterial restored: the grey wash was the pale
+                #82BODB albedo under ACES + bright lights, not the
+                wrapper — the saturated TORUS_ALBEDO renders blue with
+                the distort wobble intact (verified). Explicit
+                directional lights, no env map (see below). */}
             <MeshDistortMaterial
-              color={GOLD}
-              metalness={1}
-              roughness={0.18}
+              color={TORUS_ALBEDO}
+              metalness={0.35}
+              roughness={0.35}
               distort={0.28}
               speed={1.2}
             />
@@ -194,7 +212,7 @@ function OrbScene({ reducedMotion }: { reducedMotion: boolean }) {
             </bufferGeometry>
             <pointsMaterial
               size={0.02}
-              color={GOLD}
+              color={BLUE}
               sizeAttenuation
               transparent
               opacity={0.75}
@@ -202,41 +220,29 @@ function OrbScene({ reducedMotion }: { reducedMotion: boolean }) {
             />
           </points>
         </group>
-        {/* Thin gold orbit ring, tilted. */}
+        {/* Thin light-blue orbit ring, tilted. */}
         <mesh rotation={[Math.PI / 2.5, 0.2, 0]}>
           <torusGeometry args={[1.9, 0.012, 8, 128]} />
-          <meshBasicMaterial color={GOLD} />
+          <meshBasicMaterial color={BLUE_LIGHT} />
         </mesh>
       </group>
-      {/* Local environment only — Lightformers, no network HDR preset. */}
-      <Environment resolution={256} frames={1}>
-        <Lightformer
-          intensity={4}
-          position={[0, 5, -9]}
-          scale={[10, 10, 1]}
-          color="#ffdf80"
-        />
-        <Lightformer
-          intensity={2}
-          position={[-5, 1, -1]}
-          scale={[8, 3, 1]}
-          color="#bcd0ff"
-        />
-        <Lightformer
-          intensity={3}
-          rotation-x={Math.PI / 2}
-          position={[0, 5, 0]}
-          scale={[10, 1, 1]}
-          color="#ffffff"
-        />
-      </Environment>
+      {/* Explicit lights, no Environment map. The drei Environment
+          (Lightformers baked into an env map) made the torus render
+          grey-white in the verification renderer regardless of
+          metalness/roughness/emissive — the env reflections washed
+          the dusty-blue albedo out. Directional lights render the
+          diffuse colour faithfully: a white key, a blue fill, and a
+          yellow accent (the single glint touch, kept as a light). */}
+      <directionalLight position={[2, 4, 5]} intensity={1.2} color="#ffffff" />
+      <directionalLight position={[-3, 1, 2]} intensity={0.9} color="#82bodb" />
+      <directionalLight position={[0, 5, -3]} intensity={0.8} color={YELLOW_GLINT} />
       {reducedMotion ? <InvalidateOnce /> : null}
     </>
   );
 }
 
 /**
- * The signature golden liquid-metal torus, rendered in real 3D and fixed to
+ * The signature dusty-blue liquid-metal torus, rendered in real 3D and fixed to
  * the viewport so it travels the whole page. Lazy-loaded via next/dynamic
  * (ssr: false) from Hero; if WebGL is unavailable it renders the CSS
  * `.orb-fallback` poster inside the hero stage instead.

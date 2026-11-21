@@ -47,13 +47,22 @@ export default function Contact() {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const projectRef = useRef<HTMLSelectElement>(null);
   const detailsRef = useRef<HTMLTextAreaElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
   const fieldRefs = { name: nameRef, email: emailRef, project: projectRef, details: detailsRef };
+
+  // Error summary (ux-guidelines.csv #109): focus moves to the summary
+  // after a failed submit; each item links to its field. The summary
+  // renders only after a submit attempt, so focus is deferred a tick.
+  function focusSummary() {
+    window.setTimeout(() => summaryRef.current?.focus(), 0);
+  }
 
   function setValue<K extends keyof Values>(key: K, value: string) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -67,14 +76,14 @@ export default function Contact() {
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setSubmitted(true);
     const errs = validate(values);
     setErrors(errs);
     setWhatsappUrl(null);
     if (Object.keys(errs).length > 0) {
       const count = Object.keys(errs).length;
       setStatus(`Please fix ${count} field${count === 1 ? "" : "s"} below.`);
-      const first = FIELD_ORDER.find((k) => errs[k]);
-      if (first) fieldRefs[first].current?.focus();
+      focusSummary();
       return;
     }
 
@@ -89,6 +98,7 @@ export default function Contact() {
       const data: ApiResponse | null = await res.json().catch(() => null);
       if (res.ok && data?.ok) {
         setErrors({});
+        setSubmitted(false);
         setStatus(form.sent);
         if (data.channel === "whatsapp" && data.whatsappUrl) {
           setWhatsappUrl(data.whatsappUrl);
@@ -100,8 +110,7 @@ export default function Contact() {
         setErrors(serverErrors);
         const count = Object.keys(serverErrors).length;
         setStatus(`Please fix ${count} field${count === 1 ? "" : "s"} below.`);
-        const first = FIELD_ORDER.find((k) => serverErrors[k]);
-        if (first) fieldRefs[first].current?.focus();
+        focusSummary();
         return;
       }
       setStatus(form.error);
@@ -122,7 +131,7 @@ export default function Contact() {
             lead={CONTACT_SECTION.meta}
             scrim
           />
-          <p className="lead muted -mt-6 mb-10 max-w-[62ch] md:-mt-8" data-reveal>
+          <p className="lead muted measure -mt-6 mb-10 md:-mt-8" data-reveal>
             {CONTACT_SECTION.body}
           </p>
 
@@ -137,7 +146,7 @@ export default function Contact() {
                     {...(ch.href.startsWith("http")
                       ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
-                    className="link link--gold tap44"
+                    className="link link--blue tap44"
                   >
                     {ch.value}
                   </a>
@@ -155,8 +164,28 @@ export default function Contact() {
             onSubmit={onSubmit}
             noValidate
             aria-label={CONTACT_SECTION.h2}
-            className="flex max-w-[640px] flex-col gap-5"
+            className="flex max-w-xl flex-col gap-6"
           >
+            {submitted && Object.keys(errors).length > 0 ? (
+              <div ref={summaryRef} tabIndex={-1} role="alert" className="form__summary">
+                <p>There is a problem</p>
+                <ul>
+                  {FIELD_ORDER.filter((k) => errors[k]).map((k) => (
+                    <li key={k}>
+                      <a
+                        href={`#contact-${k}`}
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                          fieldRefs[k].current?.focus();
+                        }}
+                      >
+                        {errors[k]}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <div className="grid gap-6 md:grid-cols-2">
             <div className="field">
               <label htmlFor="contact-name">{form.nameLabel}</label>
@@ -243,6 +272,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={sending}
+                aria-busy={sending}
                 className="btn btn--primary"
               >
                 {sending ? form.sending : form.submit}

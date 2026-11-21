@@ -1,33 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Instrument_Serif, Schibsted_Grotesk } from "next/font/google";
+import { Manrope } from "next/font/google";
+import { FAQ } from "@/lib/content";
 import "./globals.css";
 
 /*
- * Type: first dealt pairing Schibsted Grotesk (text + UI); display in
- * Archivo condensed (width axis) to keep the live site's monumental
- * condensed display type; italic Instrument Serif for emphasis words.
- * See PLAN.md.
+ * Type: ONE typeface — Manrope (landing-page skill B1). The taste deal's
+ * first pairing (Instrument Serif / Instrument Sans) conflicts with B1's
+ * one-typeface/no-italics rule, which the parent brief made non-negotiable,
+ * so Manrope replaces the printed Hanken Grotesk, keeping the dealt
+ * weights/tracking. See PLAN.md (theme redesign, 2026-11-21).
  */
-const archivo = Archivo({
+const manrope = Manrope({
   subsets: ["latin"],
-  axes: ["wdth"],
-  weight: "variable",
-  variable: "--font-display",
-  display: "swap",
-});
-
-const schibsted = Schibsted_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-text",
-  display: "swap",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-serif",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -58,8 +44,27 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0a0a0a",
+  themeColor: "#101d49",
 };
+
+/** FAQPage JSON-LD (AEO) — the site's 5 Q&As, exact from CONTENT.md. */
+function FaqJsonLd() {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -68,11 +73,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-type="service"
       data-radius="soft"
       data-buttons="tonal"
-      className={`${archivo.variable} ${schibsted.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${manrope.variable} h-full antialiased`}
     >
       <head>
         <meta name="page-type" content="service" />
         <meta name="site-kind" content="other" />
+        <FaqJsonLd />
       </head>
       <body className="min-h-full">
         {children}

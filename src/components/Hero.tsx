@@ -6,26 +6,30 @@ import { HERO } from "@/lib/content";
 import { Btn } from "./ui";
 
 // Lazy 3D canvas: no WebGL work (or cost) until this component mounts,
-// and never on the server.
+// and never on the server. While the chunk loads, the CSS torus poster
+// shows (Next.js streaming guidance: slow content gets a loading state).
 const ContinuumOrb = dynamic(() => import("./three/ContinuumOrb"), {
   ssr: false,
+  loading: () => (
+    <div className="orb-fallback" aria-hidden="true">
+      <div className="torus" />
+    </div>
+  ),
 });
 
 /**
  * Product hero: head row above (h1 left, lead + buttons right, feet
- * aligned), the golden continuum torus whole on the stage across the
- * wrap, and the small mono meta row at the foot. All copy comes from
+ * aligned), the dusty-blue continuum torus whole on the stage across
+ * the wrap, and the small meta row at the foot. All copy comes from
  * src/lib/content.ts.
  */
 export default function Hero() {
   // Two balanced lines, derived from the content string — never retyped.
-  // The last word of the second line sits in italic serif (two-voice
-  // headline); the RevealRig splits both lines into word masks.
+  // The RevealRig splits the h1 into chars (SplitText) for the hero
+  // headline stagger; the <br> is the meaningful line break (B5).
   const words = HERO.h1.split(" ");
   const firstLine = words.slice(0, 4).join(" ");
-  const secondWords = words.slice(4);
-  const secondLast = secondWords[secondWords.length - 1];
-  const secondRest = secondWords.slice(0, -1).join(" ");
+  const secondLine = words.slice(4).join(" ");
 
   return (
     <section
@@ -49,8 +53,7 @@ export default function Hero() {
           >
             {firstLine}
             <br />
-            {secondRest}{" "}
-            <em className="serif-accent">{secondLast}</em>
+            {secondLine}
           </h1>
           <div
             data-reveal-hero
@@ -58,12 +61,14 @@ export default function Hero() {
           >
             <p className="lead">{HERO.sub}</p>
             <div className="flex flex-col items-start gap-3">
-              <Btn href={HERO.primaryHref} variant="primary">
-                {HERO.primary}
-              </Btn>
-              <Btn href={HERO.secondaryHref} variant="secondary">
+              {/* One primary action (Part A): the free plan. The scroll
+                  cue is a text link, not a competing button. */}
+              <Btn href={HERO.secondaryHref} variant="primary">
                 {HERO.secondary}
               </Btn>
+              <a href={HERO.primaryHref} className="link link--blue tap44">
+                {HERO.primary}
+              </a>
             </div>
           </div>
 

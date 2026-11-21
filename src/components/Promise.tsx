@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { PROMISE, formatLkr } from "@/lib/content";
-import { Btn, Section, SectionHead } from "./ui";
+import { Btn, Section } from "./ui";
 
 /** rAF count-up with cubic ease-out. Calls `done` when it lands. */
 function countUp(
@@ -22,9 +22,71 @@ function countUp(
 }
 
 /**
+ * B11 tagline reveal — the tagline as its own moment. Words start at
+ * ~30% ink and transition individually to full colour in reading order
+ * (120ms apart) on the base curve, once, when the heading enters the
+ * viewport. Reduced motion shows the final text immediately. The
+ * accessible name is the full tagline; the animated words are hidden
+ * from the accessibility tree.
+ */
+function TaglineReveal({ text }: { text: string }) {
+  const ref = useRef<HTMLHeadingElement>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // Deferred one tick: setState directly in an effect body is
+      // flagged by react-hooks/set-state-in-effect.
+      const t = window.setTimeout(() => setActive(true), 0);
+      return () => window.clearTimeout(t);
+    }
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActive(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Two lines at the sentence boundary: "Same standard." / "Half the rate."
+  const [first, second] = text.split(". ");
+  const lines = [first ? `${first}.` : "", second ?? ""].filter(Boolean);
+  let i = -1;
+  return (
+    <h2 ref={ref} className="heading-1" aria-label={text}>
+      {lines.map((line, li) => (
+        <span key={li} className="block" aria-hidden="true">
+          {line.split(" ").map((word) => {
+            i += 1;
+            const idx = i;
+            return (
+              <span
+                key={idx}
+                className={`tagline-word${active ? " tagline-word--on" : ""}`}
+                style={{ transitionDelay: `${idx * 120}ms` }}
+              >
+                {word}{" "}
+              </span>
+            );
+          })}
+        </span>
+      ))}
+    </h2>
+  );
+}
+
+/**
  * The 50% Promise — market price counts up on enter, then a "÷2" beat,
- * then the Zyrix price in huge gold display type. Comparison table below,
- * split terms + "See every plan" link at the foot.
+ * then the Zyrix price in huge yellow display type (the 50% moments are
+ * the accent). Comparison table below, split terms + "See every plan"
+ * link at the foot.
  */
 export function Promise() {
   const [market, setMarket] = useState(0);
@@ -59,8 +121,16 @@ export function Promise() {
 
   return (
     <Section id="promise" h={2} attrs={{ "data-dim-orb": "" }}>
-      <SectionHead eyebrow={PROMISE.eyebrow} title={PROMISE.h2} lead={PROMISE.note} scrim />
-      <div ref={wrapRef} className="flex flex-1 flex-col justify-between gap-10 md:gap-14">
+      <div className="scrim mb-12 md:mb-16">
+        <p className="eyebrow mb-4" data-reveal>
+          {PROMISE.eyebrow}
+        </p>
+        <TaglineReveal text={PROMISE.h2} />
+        <p className="lead muted mt-6" data-reveal>
+          {PROMISE.note}
+        </p>
+      </div>
+      <div ref={wrapRef} className="flex flex-1 flex-col justify-between gap-10 md:gap-12">
         {/* Counter: the "60,000 → ÷2 → 30,000" stack stays vertical on the
             left; the Zyrix lines sit beside it on md+, so the block spans
             the container width instead of leaving side space. */}
@@ -71,13 +141,13 @@ export function Promise() {
               {formatLkr(market)} LKR
             </p>
             <p
-              className="figure mt-4 text-gold transition-opacity duration-300"
+              className="figure mt-4 text-accent transition-opacity duration-300"
               style={{ opacity: showDivide ? 1 : 0 }}
               aria-hidden={!showDivide}
             >
               ÷2
             </p>
-            <p className="figure mt-4 text-gold">
+            <p className="figure mt-4 text-accent">
               {formatLkr(zyrix)} LKR
             </p>
           </div>
@@ -93,14 +163,14 @@ export function Promise() {
             <div
               key={row.name}
               data-reveal-item
-              className={`flex items-baseline justify-between gap-6 py-5 ${i > 0 ? "hairline-t" : ""}`}
+              className={`flex items-baseline justify-between gap-6 py-6 ${i > 0 ? "hairline-t" : ""}`}
             >
               <span className="label">{row.name}</span>
               <span className="flex items-baseline gap-4 md:gap-8">
-                <span className="display text-gold" style={{ fontSize: "clamp(24px, 2.6vw, 36px)" }}>
+                <span className="heading-3 text-accent">
                   {row.zyrix}
                 </span>
-                <s className="muted font-mono text-sm">{row.market}</s>
+                <s className="muted tnum text-sm">{row.market}</s>
               </span>
             </div>
           ))}

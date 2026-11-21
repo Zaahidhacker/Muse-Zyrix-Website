@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { Copy, FileText, ShoppingCart, Stack } from "@phosphor-icons/react";
 import { PRICING, formatLkr } from "@/lib/content";
 import { Btn, Section, SectionHead } from "./ui";
 
@@ -16,71 +19,56 @@ function MarketLine({ market }: { market: string }) {
   );
 }
 
+/** Tier icons are Phosphor (regular weight, 40px feature size). Navy on
+    the light cards — blue on light grounds is only ~2.5:1. */
 function TierIcon({ n }: { n: string }): ReactNode {
   const props = {
+    size: 40,
+    weight: "regular" as const,
     "aria-hidden": true,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.5,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    className: "h-10 w-10 text-gold",
+    className: "text-navy",
   };
   switch (n) {
     case "01": // single page / document
-      return (
-        <svg {...props}>
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <path d="M14 2v6h6" />
-          <path d="M16 13H8" />
-          <path d="M16 17H8" />
-          <path d="M10 9H8" />
-        </svg>
-      );
+      return <FileText {...props} />;
     case "02": // multi-page
-      return (
-        <svg {...props}>
-          <rect x="9" y="9" width="13" height="13" rx="2" />
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-        </svg>
-      );
+      return <Copy {...props} />;
     case "03": // shopping cart
-      return (
-        <svg {...props}>
-          <circle cx="8" cy="21" r="1" />
-          <circle cx="19" cy="21" r="1" />
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-        </svg>
-      );
+      return <ShoppingCart {...props} />;
     default: // layers
-      return (
-        <svg {...props}>
-          <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" />
-          <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" />
-          <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" />
-        </svg>
-      );
+      return <Stack {...props} />;
   }
 }
 
 export default function Pricing() {
   return (
-    <Section id="pricing" h={2} hm={3} tone="cream">
+    <Section id="pricing" h={2} hm={3} tone="inverse">
       <SectionHead
         eyebrow={PRICING.eyebrow}
         title={PRICING.h2}
         lead={`${PRICING.meta} plans`}
       />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6" data-reveal-stagger>
+      {/* Asymmetric grid (redesign skill): 5/7 rows at xl, same internal
+          structure in every card so the included lists start at the same
+          Y. Business is the featured tier (the 50% benchmark): yellow
+          border + a yellow tag pill straddling the top edge — emphasis
+          by colour/weight, not height. */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-12" data-reveal-stagger>
         {PRICING.tiers.map((tier) => (
           <article
             key={tier.n}
             data-reveal-item
-            className={`card card--tier flex flex-col gap-5 p-6 md:p-8${tier.n === "02" ? " card--featured" : ""}`}
+            className={`card card--tier relative flex flex-col gap-6 p-6 md:p-8${tier.n === "02" ? " card--featured" : ""} ${
+              tier.n === "01" || tier.n === "03" ? "xl:col-span-5" : "xl:col-span-7"
+            }`}
           >
+            {tier.n === "02" ? (
+              <span className="caption-4 absolute -top-3 right-6 rounded-full bg-accent px-3 py-1 text-navy">
+                The 50% benchmark
+              </span>
+            ) : null}
             <div className="flex items-baseline justify-between gap-4">
-              <span className="font-mono text-sm">{tier.n}</span>
+              <span className="tnum text-sm">{tier.n}</span>
               <span className="label">{tier.kind}</span>
             </div>
             <TierIcon n={tier.n} />
@@ -88,7 +76,7 @@ export default function Pricing() {
             <p className="figure">
               {formatLkr(tier.price)}
               {"priceSuffix" in tier ? tier.priceSuffix : ""}
-              <span className="text-[0.5em]"> {tier.unit}</span>
+              <span className="text-2xl"> {tier.unit}</span>
             </p>
             <p className="label muted">{tier.period}</p>
             <p className="text-sm">

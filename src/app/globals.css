@@ -1,68 +1,92 @@
 @import "tailwindcss";
 
 /*
- * Zyrix design system — tokens dealt by the taste-skill.
- * Palette: the client's own black/gold via `start.mjs brand` (the three
- * dealt palettes clashed with the brand). Type: first dealt pairing
- * Schibsted Grotesk; display in Archivo condensed (width axis) to keep the
- * live site's monumental condensed display type; italic Instrument Serif
- * for emphasis words; system mono for micro-labels. See PLAN.md.
+ * Zyrix design system — theme redesign 2026-11-21.
+ * Pattern: Scroll-Triggered Storytelling (ui-ux-pro-max landing.csv #10).
+ * Style: Liquid Glass, scoped to the floating nav pill + frosted scrims
+ *   (styles.csv #14) — cards stay flat opaque.
+ * Colours: Trust & Authority (landing.csv #33) — navy #101D49 ground,
+ *   trust blue #82BODB primary, yellow #F7EB4F for CTA + 50% moments
+ *   ONLY. Tokens dealt by the taste-skill `brand` flow; see PLAN.md and
+ *   design-system/zyrix/pages/home.md (the page override — MASTER.md's
+ *   pink/Brutalist output was rejected and is not truth).
+ * Type: ONE typeface, Manrope (landing-page skill B1). No italics.
+ *   Sizes snapped to the Tailwind scale, closest step below; named
+ *   text styles heading-1..caption-5 as reusable classes.
+ * Motion: B7 base curve cubic-bezier(0.22,1,0.36,1); duration-500
+ *   movement / duration-300 colour-opacity; transform + opacity only.
+ * Tokens are three-layer (design-system skill): primitive (@theme)
+ *   → semantic (:root --p-*) → component (classes below). No raw hex
+ *   in components.
  */
 
 @theme {
-  --color-coal: #0a0a0a;
-  --color-panel: #141414;
-  --color-panel2: #1c1c1c;
-  --color-cream: #f5f1e8;
-  --color-gold: #f0a500;
-  --color-gold-deep: #c78d00;
-  --color-muted: #a8a29a;
-  --color-muted-dark: #575653;
+  --color-navy: #101d49;
+  --color-panel: #182751;
+  --color-panel2: #1e2f5c;
+  --color-blue: #82bodb;
+  --color-blue-light: #a9d1e4;
+  --color-accent: #f7eb4f;
+  --color-mist: #eaf2f7;
+  --color-foam: #dcebf2;
+  --color-muted: #8694ac;
+  --color-muted-dark: #536284;
 
-  --font-display: "Archivo", "Schibsted Grotesk", system-ui, sans-serif;
-  --font-text: "Schibsted Grotesk", system-ui, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --font-sans: "Manrope", system-ui, sans-serif;
 
-  --radius-lg: 20px;
+  --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
+
+  --z-nav: 50;
+  --z-menu-backdrop: 55;
+  --z-menu: 60;
+  --z-gate: 100;
+  --z-cursor: 200;
 }
 
 :root {
-  --p-bg: #0a0a0a;
-  --p-surface: #141414;
-  --p-ink: #f5f1e8;
-  --p-muted: #a8a29a;
-  --p-accent: #f0a500;
-  --p-accent-ink: #0a0a0a;
-  --p-action: #f0a500;
-  --p-action-ink: #0a0a0a;
-  --p-inv-bg: #f5f1e8;
-  --p-inv-ink: #0a0a0a;
-  --p-inv-muted: #575653;
-  --p-inv-accent: #0a0a0a;
-  --p-inv-action: #0a0a0a;
-  --p-inv-action-ink: #f5f1e8;
+  --p-bg: #101d49;
+  --p-surface: #182751;
+  --p-ink: #eaf2f7;
+  --p-muted: #8694ac;
+  --p-accent: #f7eb4f;
+  --p-accent-ink: #101d49;
+  --p-action: #f7eb4f;
+  --p-action-ink: #101d49;
+  --p-blue: #82bodb;
+  --p-blue-light: #a9d1e4;
+  --p-inv-bg: #eaf2f7;
+  --p-inv-surface: #d8e2ea;
+  --p-inv-ink: #101d49;
+  --p-inv-muted: #536284;
+  --p-inv-accent: #101d49;
+  --p-inv-accent-ink: #eaf2f7;
+  --p-inv-action: #101d49;
+  --p-inv-action-ink: #eaf2f7;
+  --p-foam: #dcebf2;
 
   --nav: 72px;
-  --padt: 120px;
+  --padt: 96px;
   --padb: 72px;
   --gut: 80px;
   --hgap: 48px;
 
-  --font-display: "Archivo", "Schibsted Grotesk", system-ui, sans-serif;
-  --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+  --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
   --display-weight: 600;
   --display-tracking: -0.03em;
-  --display-tracking-xl: -0.04em;
-  --ly-scale: 0.98;
+  --display-tracking-xl: -0.038em;
+
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --icon-xl: 40px;
 }
 
 @media (max-width: 639px) {
   :root {
     --nav: 56px;
-    --padt: 96px;
+    --padt: 64px;
     --padb: 48px;
     --gut: 24px;
     --hgap: 24px;
@@ -75,7 +99,8 @@
 
 html {
   scroll-behavior: auto;
-  scroll-padding-top: 0;
+  /* WCAG 2.2 focus-not-obscured: anchor jumps clear the floating nav. */
+  scroll-padding-top: var(--nav);
 }
 
 html,
@@ -86,7 +111,7 @@ body {
 body {
   background: var(--p-bg);
   color: var(--p-ink);
-  font-family: var(--font-text);
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -96,6 +121,19 @@ body {
 ::selection {
   background: var(--p-accent);
   color: var(--p-accent-ink);
+}
+
+/* Grain for flat surfaces (no gradients to solve flatness): a static
+   SVG-noise layer, fixed above the canvas (z -1) and below all content
+   (.wrap is z 1). Opacity is deliberately low so text stays clean. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
 /* ---------- layout shell ---------- */
@@ -131,7 +169,7 @@ body {
 }
 
 .ground-inverse {
-  background: var(--p-inv-bg);
+  background: var(--p-foam);
   color: var(--p-inv-ink);
 }
 
@@ -139,34 +177,286 @@ body {
   background: var(--p-surface);
 }
 
-/* ---------- type ---------- */
+/* ---------- type: named text styles (B1) ---------- */
+/* Sizes are Tailwind scale steps, closest step below the old size.
+   Headings: text-wrap balance (no orphans). Body: text-wrap pretty.
+   No text-transform anywhere — headings keep their source casing;
+   the all-caps slogans are already all-caps in CONTENT.md. */
 
-.display {
-  font-family: var(--font-display);
+.heading-1 {
   font-weight: 600;
-  font-stretch: 75%;
   letter-spacing: var(--display-tracking);
-  line-height: 0.98;
+  line-height: 1.05;
+  font-size: 72px;
+  text-wrap: balance;
+}
+
+.heading-2 {
+  font-weight: 600;
+  letter-spacing: var(--display-tracking);
+  line-height: 1.05;
+  font-size: 60px;
+  text-wrap: balance;
+}
+
+.heading-3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-size: 36px;
+  text-wrap: balance;
+}
+
+.heading-4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: 30px;
+  text-wrap: balance;
+}
+
+.heading-5 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-size: 24px;
+  text-wrap: balance;
+}
+
+.heading-6 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  font-size: 20px;
+  text-wrap: balance;
+}
+
+@media (max-width: 639px) {
+  .heading-1 {
+    font-size: 48px;
+  }
+  .heading-2 {
+    font-size: 36px;
+  }
+  .heading-3 {
+    font-size: 30px;
+  }
+  .heading-4 {
+    font-size: 24px;
+  }
+  .heading-5 {
+    font-size: 20px;
+  }
+  .heading-6 {
+    font-size: 18px;
+  }
+}
+
+.title-1 {
+  font-weight: 500;
+  line-height: 1.3;
+  font-size: 20px;
+  text-wrap: pretty;
+}
+
+.title-2 {
+  font-weight: 500;
+  line-height: 1.35;
+  font-size: 18px;
+  text-wrap: pretty;
+}
+
+.title-3 {
+  font-weight: 500;
+  line-height: 1.4;
+  font-size: 16px;
+  text-wrap: pretty;
+}
+
+.title-4 {
+  font-weight: 500;
+  line-height: 1.45;
+  font-size: 14px;
+  text-wrap: pretty;
+}
+
+.title-5 {
+  font-weight: 600;
+  line-height: 1.5;
+  font-size: 12px;
+  text-wrap: pretty;
+}
+
+.body-1 {
+  font-size: 20px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.body-2 {
+  font-size: 18px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.body-3 {
+  font-size: 16px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.body-4 {
+  font-size: 14px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.body-5 {
+  font-size: 12px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.body-6 {
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 500;
+  text-wrap: pretty;
+}
+
+.button-lg {
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.button-md {
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.button-sm {
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.button-xsm {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.caption-1 {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.caption-2 {
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.caption-3 {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.caption-4 {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
+.caption-5 {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Legacy display classes, re-based on the named styles: the components
+   keep their class names, the type underneath is the new system. */
+.display {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: var(--display-tracking);
+  line-height: 1.05;
+}
+
 h1.display {
-  font-size: clamp(40px, 6.4vw, 92px);
+  font-size: 72px;
   letter-spacing: var(--display-tracking-xl);
+  text-wrap: balance;
 }
 
 h2.display {
-  font-size: clamp(34px, 4.6vw, 64px);
+  font-size: 60px;
+  text-wrap: balance;
 }
 
-/* A figure (price, score, count) never outgrows the h2. */
-.figure {
-  font-family: var(--font-display);
+h3.display {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+@media (max-width: 639px) {
+  h1.display {
+    font-size: 48px;
+  }
+  h2.display {
+    font-size: 36px;
+  }
+  h3.display {
+    font-size: 20px;
+  }
+}
+
+/* Same face and size as h3.display (card claims, FAQ questions). */
+.display--sentence {
+  font-family: var(--font-sans);
   font-weight: 600;
-  font-stretch: 75%;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-size: 24px;
+  text-wrap: balance;
+}
+
+@media (max-width: 639px) {
+  .display--sentence {
+    font-size: 20px;
+  }
+}
+
+/* A figure (price, score, count) never outgrows the h2. Tabular
+   numerals keep prices aligned. */
+.figure {
+  font-family: var(--font-sans);
+  font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1;
-  font-size: clamp(34px, 4.6vw, 64px);
+  font-size: 60px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 639px) {
+  .figure {
+    font-size: 48px;
+  }
+}
+
+/* Tabular numerals for prices, counts and data (Manrope + tnum;
+   no mono face anywhere — one typeface). */
+.tnum {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Standalone links/buttons that must be a 44px tap target on phones. */
@@ -176,37 +466,16 @@ h2.display {
   min-height: 44px;
 }
 
-h3.display {
-  font-size: clamp(24px, 2vw, 28px);
-  letter-spacing: -0.02em;
-}
-
-/* Same face and size as h3.display, but sentence case: card claims and
-   FAQ questions keep the live site's casing while sharing one title face. */
-.display--sentence {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-stretch: 75%;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  font-size: clamp(24px, 2vw, 28px);
-}
-
-.serif-accent {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
-}
-
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--p-accent);
+  /* Accent is for CTA + 50% moments only: eyebrows are the primary.
+     Text on navy uses the light tint — plain #82BODB is only 2.33:1
+     on navy; #A9D1E4 is 9.99:1. */
+  color: var(--p-blue-light);
 }
 
 .ground-inverse .eyebrow {
@@ -214,9 +483,9 @@ h3.display {
 }
 
 .label {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -235,7 +504,7 @@ h3.display {
   max-width: 62ch;
 }
 
-/* Body copy over the live 3D scene: cream at near-full strength, never
+/* Body copy over the live 3D scene: ink at near-full strength, never
    the dimmed muted grey — the orb behind it washes thin text out. */
 .lead.muted,
 .measure.muted {
@@ -251,25 +520,44 @@ h3.display {
   max-width: 62ch;
 }
 
+/* Hero heading: solid mist. (B5's white → blue-light text gradient was
+   removed 2026-11-21: background-clip:text does not paint on the h1 in
+   the verification browser — the headline was invisible — while a fresh
+   gradient div on the same page paints fine, so the h1's compositing
+   context over the live WebGL canvas is the trigger. Solid mist is
+   14.33:1, matches the motion pass the user praised, and is robust
+   everywhere. The .hero-gradient rule was deleted with it.) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- buttons & links ---------- */
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  height: 48px;
+  gap: 8px;
+  height: 44px;
   min-height: 44px;
-  padding: 0 24px;
+  padding: 8px 12px;
   border-radius: 999px;
   font-size: 16px;
-  font-weight: 500;
-  line-height: 1;
+  font-weight: 600;
+  line-height: 1.4;
   text-decoration: none;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: transform 160ms ease, background-color 160ms ease, color 160ms ease,
-    border-color 160ms ease;
+  transition: transform 500ms var(--ease-base), background-color 300ms ease,
+    color 300ms ease, border-color 300ms ease;
   white-space: nowrap;
 }
 
@@ -281,18 +569,18 @@ h3.display {
   isolation: isolate;
 }
 
-/* Gold flood on hover, Unseen-style: a lighter gold layer sweeps in
-   from the left under the label. No shadow anywhere — depth comes
-   from the scene, not the chrome. */
+/* Yellow flood on hover: a lighter yellow layer sweeps in from the
+   left under the label. No shadow anywhere — depth comes from the
+   scene, not the chrome. */
 .btn--primary::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: #ffcf4d;
+  background: color-mix(in srgb, var(--p-accent) 55%, white);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 500ms var(--ease-base);
 }
 
 .btn--primary:hover::before {
@@ -349,64 +637,88 @@ h3.display {
   background-size: 0% 1px;
   background-position: 0 100%;
   background-repeat: no-repeat;
-  transition: background-size 200ms ease;
+  transition: background-size 300ms ease;
 }
 
 .link:hover {
   background-size: 100% 1px;
 }
 
-.link--gold {
-  color: var(--p-accent);
+/* Text links are the primary blue on navy (accent is CTA-only).
+   The light tint: plain #82BODB is only 2.33:1 on navy, #A9D1E4
+   is 9.99:1. Never blue text on light grounds — navy ink there. */
+.link--blue {
+  color: var(--p-blue-light);
 }
 
-/* ---------- nav ---------- */
+.ground-inverse .link--blue {
+  color: var(--p-inv-ink);
+}
+
+/* ---------- nav: floating compact pill (B7), Liquid Glass ---------- */
 
 .nav {
   position: fixed;
-  inset: 0 0 auto 0;
-  height: var(--nav);
-  background: var(--p-bg);
-  border-bottom: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100% - 32px, 1280px);
+  height: 56px;
+  background: color-mix(in srgb, var(--p-bg) 72%, transparent);
+  /* Prefixed first, standard last: Lightning CSS keeps the last
+     declaration for the same logical property, so the standard
+     backdrop-filter must come last or it is dropped. */
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
+  border-radius: 999px;
   z-index: 50;
 }
 
+/* While the menu is open the pill stays above the panel so its toggle
+   (morphing to an X) remains the close control. */
+.nav[data-menu-open="true"] {
+  z-index: 70;
+}
+
 .nav .wrap {
+  width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   gap: 24px;
+  padding: 0 8px 0 20px;
 }
 
 .nav__links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
 }
 
 .nav__links a {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.12em;
   color: var(--p-ink);
   text-decoration: none;
   padding: 8px 0;
+  transition: color 300ms ease;
 }
 
-/* Unseen cue: nav links swap into thin italic serif on hover, same
-   layout box otherwise — the word changes voice, the bar doesn't move. */
 .nav__links a:hover {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 16px;
-  letter-spacing: 0;
+  color: var(--p-blue-light);
+}
+
+/* Current section, indicated (B9). */
+.nav__links a[data-active="true"] {
+  color: var(--p-blue-light);
 }
 
 .nav__wordmark {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-weight: 700;
-  font-stretch: 75%;
   font-size: 22px;
   letter-spacing: 0.02em;
   color: var(--p-ink);
@@ -421,14 +733,14 @@ h3.display {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: 1.5px solid var(--p-accent);
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--p-blue-light);
   border-radius: 999px;
-  color: var(--p-accent);
-  font-family: var(--font-display);
+  color: var(--p-blue-light);
+  font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1;
   flex: none;
 }
@@ -436,13 +748,12 @@ h3.display {
 .progress-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   height: 32px;
   padding: 0 12px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--p-ink) 20%, transparent);
-  /* One type family in the nav: the text face, not mono. */
-  font-family: var(--font-text);
+  font-family: var(--font-sans);
   font-size: 12px;
   color: var(--p-muted);
   white-space: nowrap;
@@ -452,7 +763,45 @@ h3.display {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: var(--p-accent);
+  background: var(--p-blue-light);
+}
+
+/* Hamburger that morphs into an X (B7). Lines are 2px on a 6px gap
+   (8px pitch): open state moves top +8px and bottom -8px so all three
+   centres meet, then rotates. */
+.menu-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-toggle__line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--p-ink);
+  transition: transform 300ms var(--ease-base), opacity 300ms ease;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__line--top {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__line--mid {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__line--bottom {
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 /* ---------- cards & panels ---------- */
@@ -471,23 +820,24 @@ h3.display {
 }
 
 .card--lift {
-  transition: transform 200ms ease, border-color 200ms ease;
+  transition: transform 500ms var(--ease-base), border-color 300ms ease;
 }
 
 .card--lift:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--p-accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--p-blue-light) 55%, transparent);
 }
 
 /* Pricing tiers are a different card treatment from the lift cards:
-   no lift, only a border change on hover; the featured tier (Business)
-   carries a gold border. One card layout at most twice per page. */
+   no lift, only a border change on hover; the featured tier (Business,
+   the 50% benchmark) carries a yellow border. One card layout at most
+   twice per page. */
 .card--tier {
-  transition: border-color 200ms ease;
+  transition: border-color 300ms ease;
 }
 
 .card--tier:hover {
-  border-color: color-mix(in srgb, var(--p-accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--p-blue-light) 55%, transparent);
 }
 
 .card--featured {
@@ -523,28 +873,28 @@ h3.display {
 .field textarea {
   width: 100%;
   height: 48px;
-  padding: 0 14px;
+  padding: 0 16px;
   border-radius: var(--radius-sm);
   border: 1px solid color-mix(in srgb, var(--p-ink) 25%, transparent);
   background: transparent;
   color: var(--p-ink);
-  font-family: var(--font-text);
+  font-family: var(--font-sans);
   font-size: 16px;
   outline: none;
-  transition: border-color 160ms ease;
+  transition: border-color 300ms ease;
 }
 
 .field textarea {
   height: auto;
   min-height: 120px;
-  padding: 12px 14px;
+  padding: 12px 16px;
   resize: vertical;
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: var(--p-accent);
+  border-color: var(--p-blue-light);
 }
 
 .field select option {
@@ -555,7 +905,7 @@ h3.display {
 .field__error {
   color: #ff6b5e;
   font-size: 14px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .field input[aria-invalid="true"],
@@ -567,7 +917,31 @@ h3.display {
 .form__status {
   font-size: 14px;
   margin-top: 12px;
-  min-height: 21px;
+  min-height: 24px;
+}
+
+/* Error summary (ux-guidelines.csv #109): placed at the top of the
+   form, focused after a failed submit, each item links to its field.
+   Inline errors are retained. */
+.form__summary {
+  border: 1px solid #ff6b5e;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.form__summary p {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.form__summary ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.form__summary a {
+  color: var(--p-ink);
 }
 
 /* ---------- motion layer: word reveals, scrims, gate, ring cursor ---------- */
@@ -588,10 +962,28 @@ h3.display {
   will-change: transform, filter, opacity;
 }
 
-/* Frosted scrim: a small blurred veil behind copy that crosses the
-   orb's path. The ::before sits behind the text (isolation) and blurs
-   the fixed canvas behind it; the dark radial gradient lifts contrast
-   without a solid panel. Never full-screen — one scrim per head. */
+/* Char spans inside word masks (hero headline, SplitText). */
+.rc-i {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* B11 tagline reveal: words start at ~30% ink and transition
+   individually to full colour in reading order (the delay is set per
+   word inline). Reduced motion shows the final text immediately. */
+.tagline-word {
+  opacity: 0.3;
+  transition: opacity 600ms var(--ease-base);
+}
+
+.tagline-word--on {
+  opacity: 1;
+}
+
+/* Frosted scrim: a small flat translucent veil behind copy that
+   crosses the orb's path (Liquid Glass: blur 16px + saturate, 1px
+   highlight border, inset top light). The ::before sits behind the
+   text (isolation). Never full-screen — one scrim per head. */
 .scrim {
   position: relative;
   isolation: isolate;
@@ -600,17 +992,22 @@ h3.display {
 .scrim::before {
   content: "";
   position: absolute;
-  inset: -18px -28px;
+  inset: -16px -24px;
   z-index: -1;
   border-radius: 24px;
-  background: radial-gradient(
-    ellipse 90% 90% at 50% 50%,
-    rgba(5, 5, 5, 0.62),
-    rgba(5, 5, 5, 0.28) 55%,
-    rgba(5, 5, 5, 0) 78%
-  );
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(16, 29, 73, 0.55);
+  /* Prefixed first, standard last (see .nav): Lightning CSS keeps
+     the last declaration for the same logical property. */
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--p-ink) 14%, transparent);
+}
+
+.ground-inverse .scrim::before {
+  background: rgba(220, 235, 242, 0.6);
+  border-color: color-mix(in srgb, var(--p-inv-ink) 12%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--p-inv-ink) 14%, transparent);
 }
 
 @media (max-width: 639px) {
@@ -621,9 +1018,9 @@ h3.display {
 
 /* Orb veil: while a text-heavy section is centred (html[data-orb-dim]),
    the fixed canvas dims and shrinks a touch so copy wins the fight.
-   Compositor-only (opacity + transform), 700ms ease. */
+   Compositor-only (opacity + transform), 700ms on the base curve. */
 .orb-canvas {
-  transition: opacity 700ms ease, transform 700ms ease;
+  transition: opacity 700ms var(--ease-base), transform 700ms var(--ease-base);
 }
 
 html[data-orb-dim="1"] .orb-canvas {
@@ -641,10 +1038,10 @@ html[data-orb-dim="1"] .orb-canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
-  background: #050505;
+  gap: 24px;
+  background: var(--p-bg);
   cursor: pointer;
-  transition: transform 700ms cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 700ms var(--ease-base);
 }
 
 .gate--lifting {
@@ -653,6 +1050,8 @@ html[data-orb-dim="1"] .orb-canvas {
 
 .gate__wordmark {
   display: flex;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(64px, 14vw, 160px);
   letter-spacing: 0.02em;
   color: var(--p-ink);
@@ -662,7 +1061,7 @@ html[data-orb-dim="1"] .orb-canvas {
 
 .gate__letter {
   display: inline-block;
-  animation: gate-letter-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: gate-letter-in 600ms var(--ease-base) both;
 }
 
 .gate--fast .gate__letter {
@@ -690,7 +1089,7 @@ html[data-orb-dim="1"] .orb-canvas {
   background: var(--p-accent);
   transform: scaleX(0);
   transform-origin: left center;
-  animation: gate-line-in 500ms cubic-bezier(0.22, 1, 0.36, 1) 450ms both;
+  animation: gate-line-in 500ms var(--ease-base) 450ms both;
 }
 
 .gate--fast .gate__line {
@@ -705,7 +1104,7 @@ html[data-orb-dim="1"] .orb-canvas {
 }
 
 .gate__label {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 12px;
   letter-spacing: 0.2em;
   color: var(--p-muted);
@@ -726,7 +1125,7 @@ html[data-orb-dim="1"] .orb-canvas {
   left: 0;
   width: 36px;
   height: 36px;
-  border: 1px solid var(--p-accent);
+  border: 1px solid var(--p-blue-light);
   border-radius: 50%;
   z-index: 200;
   pointer-events: none;
@@ -739,7 +1138,7 @@ html[data-orb-dim="1"] .orb-canvas {
   position: fixed;
   inset: 0;
   z-index: 55;
-  background: rgba(5, 5, 5, 0.6);
+  background: rgba(16, 29, 73, 0.65);
   opacity: 0;
   visibility: hidden;
   transition: opacity 400ms ease, visibility 0s linear 400ms;
@@ -760,46 +1159,49 @@ html[data-orb-dim="1"] .orb-canvas {
   flex-direction: column;
   background: var(--p-bg);
   color: var(--p-ink);
+  /* Top padding clears the floating nav pill (12px + 56px). The
+     pill stays above the panel (z 70) so its morphing toggle is the
+     close control — no close button inside the panel. */
+  padding: 96px 32px 32px;
   transform: translateX(102%);
   visibility: hidden;
-  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0s linear 450ms;
+  transition: transform 450ms var(--ease-base), visibility 0s linear 450ms;
 }
 
 .menu-panel--open {
   transform: translateX(0);
   visibility: visible;
-  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 450ms var(--ease-base);
 }
 
 .menu-panel--open .menu-link {
-  animation: menu-link-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: menu-link-in 500ms var(--ease-base) both;
 }
 
 .menu-panel--open .menu-link:nth-child(1) {
-  animation-delay: 80ms;
+  animation-delay: 60ms;
 }
 
 .menu-panel--open .menu-link:nth-child(2) {
-  animation-delay: 140ms;
+  animation-delay: 120ms;
 }
 
 .menu-panel--open .menu-link:nth-child(3) {
-  animation-delay: 200ms;
+  animation-delay: 180ms;
 }
 
 .menu-panel--open .menu-link:nth-child(4) {
-  animation-delay: 260ms;
+  animation-delay: 240ms;
 }
 
 .menu-panel--open .menu-link:nth-child(5) {
-  animation-delay: 320ms;
+  animation-delay: 300ms;
 }
 
 @keyframes menu-link-in {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -838,7 +1240,7 @@ html[data-orb-dim="1"] .orb-canvas {
   z-index: 100;
   background: var(--p-accent);
   color: var(--p-accent-ink);
-  padding: 10px 16px;
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
   font-weight: 500;
   text-decoration: none;
@@ -846,12 +1248,19 @@ html[data-orb-dim="1"] .orb-canvas {
 }
 
 .skip-link:focus {
-  top: 12px;
+  /* Below the floating pill (12px + 56px), not on top of it. */
+  top: 76px;
 }
 
+/* Visible focus ring on every interactive control (3:1 state
+   contrast): yellow on navy, navy on light grounds. */
 :focus-visible {
   outline: 2px solid var(--p-accent);
   outline-offset: 2px;
+}
+
+.ground-inverse :focus-visible {
+  outline-color: var(--p-inv-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -898,15 +1307,13 @@ html[data-orb-dim="1"] .orb-canvas {
   pointer-events: none;
 }
 
+/* Flat blue ring poster (no gradients, B4) with a tinted glow. */
 .orb-fallback .torus {
   width: min(52vw, 520px);
   aspect-ratio: 1;
   border-radius: 50%;
-  border: clamp(18px, 3.4vw, 42px) solid transparent;
-  background:
-    radial-gradient(circle at 32% 28%, #ffd34d 0%, #f0a500 34%, #8a5c00 62%, #3a2700 100%)
-    border-box;
+  border: clamp(18px, 3.4vw, 42px) solid var(--p-blue);
   box-shadow:
-    0 0 90px rgba(240, 165, 0, 0.35),
-    inset 0 0 60px rgba(0, 0, 0, 0.55);
+    0 0 90px rgba(130, 176, 219, 0.35),
+    inset 0 0 60px rgba(16, 29, 73, 0.55);
 }

@@ -7,7 +7,9 @@ import { Btn } from "./ui";
 export default function Nav() {
   const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const [active, setActive] = useState<string | null>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   // Live scroll progress: scrollY / (docHeight - innerHeight), rAF-throttled.
   useEffect(() => {
@@ -39,10 +41,32 @@ export default function Nav() {
     };
   }, []);
 
-  // Mobile menu: focus moves in, Escape closes, scroll locks while open.
+  // Scroll-spy: the nav link for the section centred in the viewport
+  // is the current item (B9). A thin middle band so exactly one section
+  // is current at a time.
+  useEffect(() => {
+    const ids = NAV.links.map((l) => l.href.replace(/^#/, ""));
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (!sections.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(`#${entry.target.id}`);
+        }
+      },
+      { rootMargin: "-40% 0px -55% 0px" },
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  // Mobile menu: focus moves to the first link, Escape closes and focus
+  // returns to the toggle, scroll locks while open.
   useEffect(() => {
     if (!open) return;
-    closeRef.current?.focus();
+    firstLinkRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
@@ -55,11 +79,18 @@ export default function Nav() {
     };
   }, [open ]);
 
-  const close = useCallback(() => setOpen(false), []);
+  const close = useCallback(() => {
+    setOpen(false);
+    // If focus was inside the menu (a link just clicked, or Escape),
+    // return it to the toggle so it never sits on a hidden element.
+    if (document.activeElement?.closest("#mobile-menu")) {
+      toggleRef.current?.focus();
+    }
+  }, []);
 
   return (
     <>
-      <header className="nav">
+      <header className="nav" data-menu-open={open}>
         <a className="skip-link" href="#top">
           Skip to content
         </a>
@@ -67,7 +98,12 @@ export default function Nav() {
           <div className="hidden flex-1 xl:flex">
             <nav className="nav__links" aria-label="Primary">
               {NAV.links.map((l) => (
-                <a key={l.href} href={l.href}>
+                <a
+                  key={l.href}
+                  href={l.href}
+                  data-active={active === l.href || undefined}
+                  aria-current={active === l.href ? "true" : undefined}
+                >
                   {l.label}
                 </a>
               ))}
@@ -96,27 +132,26 @@ export default function Nav() {
               <Btn href={NAV.ctaHref}>{NAV.cta}</Btn>
             </span>
             <button
+              ref={toggleRef}
               type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-md border border-white/20 xl:hidden"
+              className="menu-toggle xl:hidden"
               aria-expanded={open}
               aria-controls="mobile-menu"
-              aria-label="Menu"
-              onClick={() => setOpen(true)}
+              aria-label={open ? "Close menu" : "Menu"}
+              onClick={() => setOpen((v) => !v)}
             >
-              <span className="flex flex-col gap-1.5" aria-hidden="true">
-                <span className="block h-0.5 w-5 bg-cream" />
-                <span className="block h-0.5 w-5 bg-cream" />
-                <span className="block h-0.5 w-5 bg-cream" />
-              </span>
+              <span className="menu-toggle__line menu-toggle__line--top" aria-hidden="true" />
+              <span className="menu-toggle__line menu-toggle__line--mid" aria-hidden="true" />
+              <span className="menu-toggle__line menu-toggle__line--bottom" aria-hidden="true" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Slide-in panel (Unseen-style): always mounted so it can slide
-          in from the right; hidden off-canvas with visibility + inert
-          while closed. The backdrop is a flat dim — no blur, per the
-          brief's small-scrims-only rule. */}
+      {/* Slide-in panel: always mounted so it can slide in from the
+          right; hidden off-canvas with visibility + inert while closed.
+          The nav pill stays above it (z 70) so the morphing toggle is
+          the close control — no close button inside the panel. */}
       <div
         className={`menu-backdrop${open ? " menu-backdrop--open" : ""}`}
         aria-hidden="true"
@@ -130,30 +165,14 @@ export default function Nav() {
         inert={!open}
         className={`menu-panel${open ? " menu-panel--open" : ""}`}
       >
-        <div className="flex h-[var(--nav)] items-center justify-between px-6">
-          <span className="nav__wordmark flex items-center gap-2">
-            <span className="mark-arc" aria-hidden="true">
-              Z
-            </span>
-            <span>ZYRIX®</span>
-          </span>
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={close}
-            aria-label="Close menu"
-            className="flex h-11 w-11 items-center justify-center rounded-md border border-white/20 text-2xl leading-none"
-          >
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
         <nav
-          className="flex flex-1 flex-col justify-center gap-2 px-6"
+          className="flex flex-1 flex-col justify-center gap-2"
           aria-label="Mobile"
         >
-          {NAV.links.map((l) => (
+          {NAV.links.map((l, i) => (
             <a
               key={l.href}
+              ref={i === 0 ? firstLinkRef : undefined}
               href={l.href}
               onClick={close}
               className="menu-link display py-3 text-4xl"

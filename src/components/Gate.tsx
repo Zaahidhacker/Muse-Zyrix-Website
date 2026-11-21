@@ -6,8 +6,8 @@ import { markGateDone } from "@/lib/gate-state";
 const LETTERS = ["Z", "Y", "R", "I", "X"];
 
 /**
- * Intro gate: a black curtain with the ZYRIX wordmark staggering in from
- * blur and a thin gold line drawing across, then the whole gate lifts
+ * Intro gate: a navy curtain with the ZYRIX wordmark staggering in from
+ * blur and a thin yellow line drawing across, then the whole gate lifts
  * away to reveal the hero. Total under ~1.4s on first visit; returning
  * visitors (sessionStorage) get a shortened 350ms lift. Click anywhere
  * to skip. Fully disabled under prefers-reduced-motion (content shows
@@ -71,7 +71,7 @@ export default function Gate() {
       onClick={skip}
       className={`gate${phase === "lifting" ? " gate--lifting" : ""}${fast ? " gate--fast" : ""}`}
     >
-      <p className="gate__wordmark display" aria-hidden="true">
+      <p className="gate__wordmark" aria-hidden="true">
         {LETTERS.map((letter, i) => (
           <span
             key={letter}
